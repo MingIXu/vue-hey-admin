@@ -17,9 +17,9 @@
 
         <!--搜索模块-->
         <div class="filter-container">
-          <el-input :placeholder="table.name" v-model="listQuery.keyWord" style="width: 200px;" class="filter-item el-input--small" @keyup.enter.native="handleFilter"/>
+          <el-input v-model="listQuery.keyWord" :placeholder="table.name" style="width: 200px;" class="filter-item el-input--small" @keyup.enter.native="handleFilter" />
           <el-select v-model="listQuery.type" :placeholder="table.sex" clearable class="filter-item" size="small" style="width: 130px">
-            <el-option v-for="item in sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key"/>
+            <el-option v-for="item in sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
           </el-select>
           <el-button v-waves class="filter-item el-button--small" type="primary" icon="el-icon-search" @click="handleFilter">{{ table.search }}</el-button>
           <el-button class="filter-item el-button--small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ table.add }}</el-button>
@@ -28,15 +28,16 @@
 
         <!--主列表模块-->
         <el-table
-          v-loading="listLoading"
           :key="tableKey"
+          v-loading="listLoading"
           :data="list"
           border
           fit
           stripe
           highlight-current-row
           style="width: 100%;"
-          @sort-change="sortChange">
+          @sort-change="sortChange"
+        >
           <el-table-column :label="table.id" prop="id" sortable="custom" align="center" width="85">
             <template slot-scope="scope">
               <span>{{ scope.row.id }}</span>
@@ -74,13 +75,15 @@
                 v-if="scope.row.status!='1'"
                 size="mini"
                 type="success"
-                @click="handleModifyStatus(scope.row,'1')">{{ table.normal }}
+                @click="handleModifyStatus(scope.row,'1')"
+              >{{ table.normal }}
               </el-button>
               <el-button
                 v-if="scope.row.status!='0'"
                 size="mini"
                 type="danger"
-                @click="handleModifyStatus(scope.row,'0')">{{ table.disable }}
+                @click="handleModifyStatus(scope.row,'0')"
+              >{{ table.disable }}
               </el-button>
             </template>
           </el-table-column>
@@ -97,21 +100,22 @@
             :model="temp"
             label-position="right"
             label-width="70px"
-            style="width: 400px; margin-left:50px;">
+            style="width: 400px; margin-left:50px;"
+          >
             <el-form-item :label="table.name" prop="name">
-              <el-input v-model="temp.name"/>
+              <el-input v-model="temp.name" />
             </el-form-item>
             <el-form-item :label="table.nick">
-              <el-input v-model="temp.nick"/>
+              <el-input v-model="temp.nick" />
             </el-form-item>
             <el-form-item :label="table.sex">
               <el-select v-model="temp.sex" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in sexOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+                <el-option v-for="item in sexOptions" :key="item.key" :label="item.display_name" :value="item.key" />
               </el-select>
             </el-form-item>
             <el-form-item :label="table.status">
               <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+                <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
               </el-select>
             </el-form-item>
           </el-form>
@@ -124,8 +128,8 @@
 
         <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
           <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-            <el-table-column prop="key" label="Channel"/>
-            <el-table-column prop="pv" label="Pv"/>
+            <el-table-column prop="key" label="Channel" />
+            <el-table-column prop="pv" label="Pv" />
           </el-table>
           <span slot="footer" class="dialog-footer">
             <el-button type="primary" @click="dialogPvVisible = false">{{ table.confirm }}</el-button>

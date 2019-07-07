@@ -2,7 +2,7 @@
   <div class="app-container">
     <!--搜索模块-->
     <div class="filter-container">
-      <el-input v-model="listQuery.keyWord" placeholder="名称" style="width: 200px;" class="filter-item el-input--small"/>
+      <el-input v-model="listQuery.keyWord" placeholder="名称" style="width: 200px;" class="filter-item el-input--small" />
       <el-button class="filter-item el-button--small" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
       <el-button class="filter-item el-button--small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">新增</el-button>
     </div>
@@ -16,7 +16,7 @@
       highlight-current-row
       style="width: 100%"
     >
-      <el-table-column v-for="(item,index) in columns" :key="index" :property="item.code" :label="item.label" :width="item.width" align="center"/>
+      <el-table-column v-for="(item,index) in columns" :key="index" :property="item.code" :label="item.label" :width="item.width" align="center" />
 
       <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -26,13 +26,15 @@
             v-if="scope.row.status!=1"
             size="mini"
             type="success"
-            @click="handleModifyStatus(scope.row,1)">启用
+            @click="handleModifyStatus(scope.row,1)"
+          >启用
           </el-button>
           <el-button
             v-if="scope.row.status!=0"
             size="mini"
             type="danger"
-            @click="handleModifyStatus(scope.row,0)">禁用
+            @click="handleModifyStatus(scope.row,0)"
+          >禁用
           </el-button>
         </template>
       </el-table-column>
@@ -46,22 +48,23 @@
         :model="temp"
         label-position="right"
         label-width="80px"
-        style="width: 400px; margin-left:50px;">
+        style="width: 400px; margin-left:50px;"
+      >
         <el-form-item label="角色名" prop="name">
-          <el-input v-model="temp.name"/>
+          <el-input v-model="temp.name" />
         </el-form-item>
         <el-form-item label="角色标识" prop="code">
-          <el-input v-model="temp.code"/>
+          <el-input v-model="temp.code" />
         </el-form-item>
         <el-form-item label="角色权限">
-          <el-input v-model="temp.description"/>
+          <el-input v-model="temp.description" />
         </el-form-item>
         <el-form-item label="顺序">
-          <el-input v-model="temp.orders"/>
+          <el-input v-model="temp.orders" />
         </el-form-item>
         <el-form-item label="是否启用">
           <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in StatusOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+            <el-option v-for="item in StatusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -80,7 +83,8 @@
         show-checkbox
         default-expand-all
         node-key="id"
-        highlight-current/>
+        highlight-current
+      />
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogTreeVisible = false">取消</el-button>
         <el-button type="primary" @click="updatePermission()">更新

@@ -23,29 +23,30 @@
           :model="temp"
           label-position="right"
           label-width="100px"
-          style="width: 400px; margin-left:50px; margin-top: 50px;">
+          style="width: 400px; margin-left:50px; margin-top: 50px;"
+        >
           <el-form-item label="ID">
-            <el-input v-model="temp.id" :disabled="true"/>
+            <el-input v-model="temp.id" :disabled="true" />
           </el-form-item>
           <el-form-item label="父ID" prop="pid">
-            <el-input v-model="temp.pid" :disabled="true"/>
+            <el-input v-model="temp.pid" :disabled="true" />
           </el-form-item>
           <el-form-item label="名称" prop="name">
-            <el-input v-model="temp.name"/>
+            <el-input v-model="temp.name" />
           </el-form-item>
           <el-form-item label="类型" prop="type">
             <el-select v-model="temp.type" class="filter-item" placeholder="Please select" @change="selectChange">
-              <el-option v-for="item in typeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+              <el-option v-for="item in typeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
             </el-select>
           </el-form-item>
           <el-form-item v-if="isMenu" label="前端组件" prop="component">
-            <el-input v-model="temp.component"/>
+            <el-input v-model="temp.component" />
           </el-form-item>
           <el-form-item v-if="isMenu" label="前端路径" prop="path">
-            <el-input v-model="temp.path"/>
+            <el-input v-model="temp.path" />
           </el-form-item>
           <el-form-item v-if="isButton" label="权限标识" prop="permissionValue">
-            <el-input v-model="temp.permissionValue"/>
+            <el-input v-model="temp.permissionValue" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="handleCreateAndUpdate">{{ confirmValue }}</el-button>
