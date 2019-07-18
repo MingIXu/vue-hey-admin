@@ -168,6 +168,13 @@ export const asyncRoutes = [
         component: () => import('@/views/dict/index'),
         meta: { title: 'dict', icon: 'table' },
         roles: ['admin']
+      },
+      {
+        path: 'menus',
+        name: 'Menus',
+        component: () => import('@/views/menus/index'),
+        meta: { title: 'menus', icon: 'table' },
+        roles: ['admin']
       }
     ]
   },
