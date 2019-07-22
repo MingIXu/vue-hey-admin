@@ -30,3 +30,10 @@ export function getTreeData() {
     method: 'get'
   })
 }
+
+export function deleteTreeData(id) {
+  return request({
+    url: `/permission/delete/${id}`,
+    method: 'get'
+  })
+}

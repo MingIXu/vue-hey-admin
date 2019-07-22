@@ -10,7 +10,7 @@ import Layout from '@/layout'
 // import componentsRouter from './modules/components'
 // import chartsRouter from './modules/charts'
 // import tableRouter from './modules/table'
-// import nestedRouter from './modules/nested'
+import nestedRouter from './modules/nested'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -70,19 +70,19 @@ export const constantRoutes = [
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
-      }
-    ]
-  },
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index'),
+  //       name: 'Dashboard',
+  //       meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/documentation',
   //   component: Layout,
@@ -130,6 +130,19 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: '',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'Dashboard',
+        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
+  {
     path: '/systemManage',
     component: Layout,
     redirect: '/systemManage/role',
@@ -168,17 +181,10 @@ export const asyncRoutes = [
         component: () => import('@/views/dict/index'),
         meta: { title: 'dict', icon: 'table' },
         roles: ['admin']
-      },
-      {
-        path: 'menus',
-        name: 'Menus',
-        component: () => import('@/views/menus/index'),
-        meta: { title: 'menus', icon: 'table' },
-        roles: ['admin']
       }
     ]
   },
-
+  nestedRouter,
   {
     path: '/icon',
     component: Layout,
@@ -396,7 +402,7 @@ export const asyncRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

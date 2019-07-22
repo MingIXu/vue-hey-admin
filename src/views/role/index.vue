@@ -121,17 +121,17 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        keyWord: undefined,
-        type: undefined
+        keyWord: '',
+        type: null
       },
       temp: {
-        id: undefined,
-        name: undefined,
-        code: undefined,
-        description: undefined,
-        orders: undefined,
-        status: undefined,
-        statusShow: undefined
+        id: null,
+        name: '',
+        code: '',
+        description: '',
+        orders: '',
+        status: 1,
+        statusShow: ''
       },
       rules: {
         name: [{ required: true, message: 'name is required', trigger: 'change' }],
