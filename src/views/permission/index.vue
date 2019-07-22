@@ -3,7 +3,20 @@
     <div class="el-container">
       <el-aside width="281px" style="padding-top: 20px">
         <el-button v-waves class="el-button--small" type="primary" @click="create">新增新目录</el-button>
-        <el-button v-waves class="el-button--small" type="primary">删除</el-button>
+        <!-- <el-button v-waves class="el-button--small" type="primary">删除</el-button> -->
+        <el-dropdown @command="handleCommand">
+          <el-button size="small" type="primary">
+            更多菜单
+            <i class="el-icon-arrow-down el-icon--right" />
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="a">取消选中</el-dropdown-item>
+            <el-dropdown-item command="b">收合所有</el-dropdown-item>
+            <el-dropdown-item command="c">仅展开一级</el-dropdown-item>
+            <el-dropdown-item command="d">仅展开二级</el-dropdown-item>
+            <el-dropdown-item command="e">展开所有</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-input v-model="filterText" size="small" placeholder="输入关键字过滤" style="margin:10px 0;" />
         <el-tree
           id="permissionTree"
@@ -15,7 +28,6 @@
           :filter-node-method="filterNode"
           class="filter-tree"
           :highlight-current="isHighlight"
-          default-expand-all
           :expand-on-click-node="false"
           @node-click="handleNodeClick"
         >
@@ -47,7 +59,7 @@
           </el-form-item>
           <!-- <el-form-item label="类型" prop="type">
             <el-input value="目录" disabled="disabled" />
-          </el-form-item> -->
+          </el-form-item>-->
           <el-form-item label="类型" prop="type">
             <el-input v-if="temp.type === 3" value="按钮" disabled="disabled" />
             <el-select
@@ -165,7 +177,8 @@ export default {
         children: 'children',
         label: 'label'
       },
-      isHighlight: true
+      isHighlight: true,
+      defaultAll: true
     }
   },
   watch: {
@@ -261,15 +274,74 @@ export default {
       this.$refs['dataForm'].clearValidate()
     },
     remove(node, data) {
-      deleteTreeData(data.id).then(res => {
-        if (res.code === 200) {
-          this.init()
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
+      this.$confirm('此操作将永久删除该节点以及子节点, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteTreeData(data.id).then(res => {
+          if (res.code === 200) {
+            this.init()
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    handleTree(childNodes, status) {
+      childNodes.forEach(v => {
+        v.expanded = status
+        if (v.childNodes.length > 0) {
+          this.handleTree(v.childNodes, status)
         }
       })
+    },
+    handleCommand(command) {
+      console.log(command)
+      switch (command) {
+        // 刷新
+        case 'a':
+          this.isHighlight = false
+          this.reset()
+          break
+        // 收合所有
+        case 'b':
+          this.handleTree(this.$refs.treeRef.store.root.childNodes, false)
+          break
+        // 仅展开一级
+        case 'c':
+          this.handleTree(this.$refs.treeRef.store.root.childNodes, false)
+          this.$refs.treeRef.store.root.childNodes.forEach(v => {
+            v.expanded = true
+          })
+          break
+        // 仅展开二级
+        case 'd':
+          this.handleTree(this.$refs.treeRef.store.root.childNodes, false)
+          this.$refs.treeRef.store.root.childNodes.forEach(v => {
+            v.expanded = true
+            if (v.childNodes.length > 0) {
+              v.childNodes.forEach(c => {
+                c.expanded = true
+              })
+            }
+          })
+          break
+        // 展开所有
+        case 'e':
+          this.handleTree(this.$refs.treeRef.store.root.childNodes, true)
+          console.log(this.$refs.treeRef.store.root)
+          break
+        default:
+          break
+      }
     }
   }
 }
