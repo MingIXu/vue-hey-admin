@@ -118,6 +118,11 @@
                 <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
               </el-select>
             </el-form-item>
+            <el-form-item label="角色">
+              <el-select v-model="temp.roles" multiple class="filter-item" placeholder="Please select">
+                <el-option v-for="item in rolesList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">{{ table.cancel }}</el-button>
@@ -141,7 +146,8 @@
 </template>
 
 <script>
-import { fetchList, createUser, updateUser, getOrgTree } from '@/api/user'
+import { fetchList, createUser, updateUser, getOrgTree, getUserRole } from '@/api/user'
+import { getList as getRolesList } from '@/api/role'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -206,7 +212,8 @@ export default {
         name: undefined,
         nick: undefined,
         sex: undefined,
-        status: undefined
+        status: undefined,
+        roles: []
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -246,7 +253,8 @@ export default {
       defaultProps: {
         children: 'children',
         label: 'label'
-      }
+      },
+      rolesList: []
     }
   },
   watch: {
@@ -257,6 +265,7 @@ export default {
   mounted() {
     this.getList()
     this.getTreeData()
+    this.getRolesList()
   },
   methods: {
     filterNode(value, data) {
@@ -277,6 +286,18 @@ export default {
         setTimeout(() => {
           this.listLoading = false
         }, 0.5 * 1000)
+      })
+    },
+    getRolesList() {
+      const data = {
+        page: 1,
+        limit: 9999
+      }
+      getRolesList(data).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          this.rolesList = res.list
+        }
       })
     },
     getTreeData() {
@@ -322,7 +343,8 @@ export default {
         name: undefined,
         nick: undefined,
         sex: undefined,
-        status: undefined
+        status: undefined,
+        roles: []
       }
     },
     handleCreate() {
@@ -351,6 +373,11 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
+      getUserRole(this.temp.id).then(res => {
+        if (res.code === 200) {
+          this.temp.roles = res.roles
+        }
+      })
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {

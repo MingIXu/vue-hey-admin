@@ -98,7 +98,6 @@
 <script>
 import { getList, getTreeData, create, update, updatePermission } from '@/api/role'
 import Pagination from '@/components/Pagination'
-
 export default {
   components: { Pagination },
   data() {

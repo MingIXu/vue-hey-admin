@@ -1,5 +1,4 @@
 import {
-  asyncRoutes,
   constantRoutes
 } from '@/router'
 
@@ -115,28 +114,22 @@ const actions = {
   }, user) {
     return new Promise(resolve => {
       const {
-        roles,
         permissionRouter
       } = user
-      let accessedRoutes
-      if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
-      } else {
-        const directory = permissionRouter.filter((item) => item.type === 1) // 目录
-        const menu = permissionRouter.filter((item) => item.type === 2) // 菜单
-        // Filter menu
-        directory.map(d => {
-          const children = []
-          menu.map(m => {
-            if (d.id === m.pid) {
-              children.push(m)
-            }
-          })
-          d.children = children
+      const directory = permissionRouter.filter((item) => item.type === 1) // 目录
+      const menu = permissionRouter.filter((item) => item.type === 2) // 菜单
+      // Filter menu
+      directory.map(d => {
+        const children = []
+        menu.map(m => {
+          if (d.id === m.pid) {
+            children.push(m)
+          }
         })
-        // Filter directory
-        accessedRoutes = filterRouters(filterDirectory(directory))
-      }
+        d.children = children
+      })
+      // Filter directory
+      const accessedRoutes = filterRouters(filterDirectory(directory))
 
       commit('SET_ROUTES', accessedRoutes)
       // Filter buttons

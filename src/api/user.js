@@ -38,3 +38,10 @@ export function getOrgTree() {
     method: 'get'
   })
 }
+
+export function getUserRole(id) {
+  return request({
+    url: `user/roles/${id}`,
+    method: 'get'
+  })
+}
