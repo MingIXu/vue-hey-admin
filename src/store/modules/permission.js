@@ -136,8 +136,9 @@ const actions = {
       const filterButtons = permissionRouter.filter((item, index, arr) => item.type === 3) // 按钮
       const permissionButtons = []
       filterButtons.map(p => {
-        permissionButtons.push(p.name)
+        permissionButtons.push(p.permissionValue)
       })
+      console.log(filterButtons)
       commit('SET_PERMISSIONBUTTONS', permissionButtons)
       resolve(accessedRoutes)
     })

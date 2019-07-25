@@ -2,7 +2,8 @@ import {
   login,
   logout,
   getInfo,
-  getPermissionByUserId
+  getPermissionByUserId,
+  refreshToken
 } from '@/api/login'
 import {
   getToken,
@@ -164,6 +165,16 @@ const actions = {
     })
   },
 
+  // refresh token
+  refreshToken() {
+    return new Promise((resolve, reject) => {
+      refreshToken().then(() => {
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
   // dynamically modify permissions
   changeRoles({
     commit,

@@ -24,6 +24,7 @@
           <el-button v-waves class="filter-item el-button--small" type="primary" icon="el-icon-search" @click="handleFilter">{{ table.search }}</el-button>
           <el-button class="filter-item el-button--small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ table.add }}</el-button>
           <el-button v-waves :loading="downloadLoading" class="filter-item el-button--small" type="primary" icon="el-icon-download" @click="handleDownload">{{ table.export }}</el-button>
+          <lgButton name="新增" class="filter-item el-button--small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" permission-value="addRole1" />
         </div>
 
         <!--主列表模块-->
@@ -151,7 +152,7 @@ import { getList as getRolesList } from '@/api/role'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-
+import lgButton from '@/views/components/lgButton'
 const sexOptions = [
   { key: 0, display_name: '男' },
   { key: 1, display_name: '女' }
@@ -173,7 +174,7 @@ const statusKeyValue = statusOptions.reduce((acc, cur) => {
 }, {})
 
 export default {
-  components: { Pagination },
+  components: { Pagination, lgButton },
   directives: { waves },
   filters: {
     statusColorFilter(status) {

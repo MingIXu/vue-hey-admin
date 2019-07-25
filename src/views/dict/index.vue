@@ -2,7 +2,12 @@
   <div class="app-container">
     <div class="el-container">
       <el-aside width="200px" style="padding-top: 20px">
-        <el-input v-model="filterText" size="small" placeholder="输入关键字过滤" style="margin-bottom:30px;" />
+        <el-input
+          v-model="filterText"
+          size="small"
+          placeholder="输入关键字过滤"
+          style="margin-bottom:30px;"
+        />
         <el-tree
           ref="tree"
           :data="treeData"
@@ -16,10 +21,33 @@
       <el-main>
         <!--搜索模块-->
         <div class="filter-container">
-          <el-input v-model="listQuery.keyWord" placeholder="名称" style="width: 200px;" class="filter-item el-input--small" />
-          <el-button class="filter-item el-button--small" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
-          <el-button class="filter-item el-button--small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="create">新增</el-button>
+          <el-input
+            v-model="listQuery.keyWord"
+            placeholder="名称"
+            style="width: 200px;"
+            class="filter-item el-input--small"
+          />
+          <el-button
+            class="filter-item el-button--small"
+            type="primary"
+            icon="el-icon-search"
+            @click="handleFilter"
+          >搜索</el-button>
+          <el-button
+            class="filter-item el-button--small"
+            style="margin-left: 10px;"
+            type="primary"
+            icon="el-icon-edit"
+            @click="create"
+          >新增</el-button>
         </div>
+        <lg-table
+          :list="list"
+          :total-list="total"
+          columns-type="index"
+          :lg-thead="dictObj.dictThead"
+          :lg-buttons="dictObj.dictButtons"
+        />
         <el-table
           v-loading="listLoading"
           :data="list"
@@ -32,8 +60,20 @@
           lazy
         >
           <el-table-column type="index" :index="getIndex" align="center" width="50" />
-          <el-table-column v-for="(item,index) in columns" :key="index" :property="item.code" :label="item.label" :width="item.width" align="center" />
-          <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+          <el-table-column
+            v-for="(item,index) in columns"
+            :key="index"
+            :property="item.code"
+            :label="item.label"
+            :width="item.width"
+            align="center"
+          />
+          <el-table-column
+            label="操作"
+            align="center"
+            width="230"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="update(scope.row)">编辑</el-button>
               <el-button type="danger" size="mini" @click="handleDeleted(scope.row)">删除</el-button>
@@ -42,7 +82,13 @@
         </el-table>
 
         <!--分页组件-->
-        <pagination v-show="total>listQuery.limit" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="init" />
+        <pagination
+          v-show="total>listQuery.limit"
+          :total="total"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.limit"
+          @pagination="init"
+        />
 
         <!--编辑新增弹出框-->
         <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -66,8 +112,7 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取消</el-button>
-            <el-button type="primary" @click="handleCreateOrUpdate">保存
-            </el-button>
+            <el-button type="primary" @click="handleCreateOrUpdate">保存</el-button>
           </div>
         </el-dialog>
       </el-main>
@@ -77,9 +122,9 @@
 <script>
 import { getList, getDicTypeTree, createOrUpdate, deleteByIds } from '@/api/dict'
 import Pagination from '@/components/Pagination'
-
+import lgTable from '@/views/components/lgTable'
 export default {
-  components: { Pagination },
+  components: { Pagination, lgTable },
   data() {
     return {
       columns: [

@@ -4,7 +4,7 @@
     <div class="filter-container">
       <el-input v-model="listQuery.keyWord" placeholder="名称" style="width: 200px;" class="filter-item el-input--small" />
       <el-button class="filter-item el-button--small" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item el-button--small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">新增</el-button>
+      <lgButton name="新增" class="filter-item el-button--small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" permission-value="addRole" @click="handleCreate" />
     </div>
     <el-table
       v-loading="listLoading"
@@ -98,8 +98,9 @@
 <script>
 import { getList, getTreeData, create, update, updatePermission } from '@/api/role'
 import Pagination from '@/components/Pagination'
+import lgButton from '@/views/components/lgButton'
 export default {
-  components: { Pagination },
+  components: { Pagination, lgButton },
   data() {
     return {
       columns: [

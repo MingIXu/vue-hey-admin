@@ -30,3 +30,10 @@ export function logout() {
     method: 'get'
   })
 }
+
+export function refreshToken() {
+  return request({
+    url: '/refreshToken',
+    method: 'get'
+  })
+}

@@ -158,7 +158,8 @@ export default {
         name: [{ required: true, message: 'name is required', trigger: 'blur' }],
         path: [{ required: true, message: 'path is required', trigger: 'blur' }],
         component: [{ required: true, message: 'component is required', trigger: 'blur' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        title: [{ required: true, message: 'title is required', trigger: 'blur' }],
+        permissionValue: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
       temp: {
         id: null,

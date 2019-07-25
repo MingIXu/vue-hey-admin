@@ -1,5 +1,5 @@
 <template>
-  <el-button v-if="permission" :type="primary" :size="size" :plain="plain" :round="round" :circle="circle" :loading="loading" :icon="icon" :autofocus="autofocus" :native-type="nativeType">{{ name }}</el-button>
+  <el-button v-if="permission()" :type="type" :size="size" :plain="plain" :round="round" :circle="circle" :loading="loading" :icon="icon" :autofocus="autofocus" :native-type="nativeType">{{ name }}</el-button>
 </template>
 <script>
 export default {
@@ -59,9 +59,10 @@ export default {
   },
   computed: {
     permissionButtons() {
-      return this.$store.state.permissionButtons
+      return this.$store.state.permission.permissionButtons
     }
   },
+
   methods: {
     permission() {
       // 处理存在权限按钮
