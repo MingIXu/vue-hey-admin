@@ -55,7 +55,7 @@ const actions = {
         username: username.trim(),
         password: password
       }).then(response => {
-        const data = response.data
+        const data = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
@@ -106,7 +106,7 @@ const actions = {
   }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        const data = response.data
+        const data = response
 
         if (!data) {
           reject('Verification failed, please Login again.')
@@ -122,7 +122,7 @@ const actions = {
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', '阿啦啦啦阿拉')
         getPermissionByUserId().then(res => {
-          const permissionRouter = res.data.list
+          const permissionRouter = res.list
           if (!permissionRouter || permissionRouter.length <= 0) {
             reject('getInfo: roles must be a non-null array!')
           }
@@ -171,7 +171,7 @@ const actions = {
   }) {
     return new Promise((resolve, reject) => {
       refreshToken().then(response => {
-        const data = response.data
+        const data = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
