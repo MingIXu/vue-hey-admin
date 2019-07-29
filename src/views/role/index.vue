@@ -2,9 +2,27 @@
   <div class="app-container">
     <!--搜索模块-->
     <div class="filter-container">
-      <el-input v-model="listQuery.keyWord" placeholder="名称" style="width: 200px;" class="filter-item el-input--small" />
-      <el-button class="filter-item el-button--small" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
-      <lgButton name="新增" class="filter-item el-button--small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" permission-value="addRole" @click="handleCreate" />
+      <el-input
+        v-model="listQuery.keyWord"
+        placeholder="名称"
+        style="width: 200px;"
+        class="filter-item el-input--small"
+      />
+      <el-button
+        class="filter-item el-button--small"
+        type="primary"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >搜索</el-button>
+      <lgButton
+        name="新增"
+        class="filter-item el-button--small"
+        style="margin-left: 10px;"
+        type="primary"
+        icon="el-icon-edit"
+        permission-value="addRole"
+        @click="handleCreate"
+      />
     </div>
     <el-table
       v-loading="listLoading"
@@ -16,7 +34,14 @@
       highlight-current-row
       style="width: 100%"
     >
-      <el-table-column v-for="(item,index) in columns" :key="index" :property="item.code" :label="item.label" :width="item.width" align="center" />
+      <el-table-column
+        v-for="(item,index) in columns"
+        :key="index"
+        :property="item.code"
+        :label="item.label"
+        :width="item.width"
+        align="center"
+      />
 
       <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -27,15 +52,13 @@
             size="mini"
             type="success"
             @click="handleModifyStatus(scope.row,1)"
-          >启用
-          </el-button>
+          >启用</el-button>
           <el-button
             v-if="scope.row.status!=0"
             size="mini"
             type="danger"
             @click="handleModifyStatus(scope.row,0)"
-          >禁用
-          </el-button>
+          >禁用</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -64,14 +87,18 @@
         </el-form-item>
         <el-form-item label="是否启用">
           <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in StatusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+            <el-option
+              v-for="item in StatusOptions"
+              :key="item.key"
+              :label="item.display_name"
+              :value="item.key"
+            />
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogTitle==='create'?createData():updateData()">提交
-        </el-button>
+        <el-button type="primary" @click="dialogTitle==='create'?createData():updateData()">提交</el-button>
       </div>
     </el-dialog>
     <!--tree组件-->
@@ -87,12 +114,17 @@
       />
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogTreeVisible = false">取消</el-button>
-        <el-button type="primary" @click="updatePermission()">更新
-        </el-button>
+        <el-button type="primary" @click="updatePermission()">更新</el-button>
       </div>
     </el-dialog>
     <!--分页组件-->
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="init" />
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="init"
+    />
   </div>
 </template>
 <script>
@@ -113,7 +145,7 @@ export default {
         { code: 'updateName', label: '编辑人', width: '' },
         { code: 'updateTime', label: '更新日期', width: '200' }
       ],
-      list: null,
+      list: [],
       total: 0,
       listLoading: true,
       dialogTitle: 'edit',
@@ -156,13 +188,15 @@ export default {
   methods: {
     init() {
       this.listLoading = true
-      getList(this.listQuery).then(response => {
-        this.list = response.list
-        this.total = response.total
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 0.5 * 1000)
+      getList(this.listQuery).then(res => {
+        if (res.code === 200) {
+          this.list = res.list
+          this.total = res.total
+          // Just to simulate the time of the request
+          setTimeout(() => {
+            this.listLoading = false
+          }, 0.5 * 1000)
+        }
       })
     },
     handleFilter() {
@@ -255,9 +289,11 @@ export default {
     handlePermission(row) {
       this.temp.id = row.id
       this.dialogTreeVisible = true
-      getTreeData(row.id).then(response => {
-        this.treeData = response.treeData
-        this.setCheckedKeys(response.keys)
+      getTreeData(row.id).then(res => {
+        if (res.code === 200) {
+          this.treeData = res.treeData
+          this.setCheckedKeys(res.keys)
+        }
       })
     },
     updatePermission() {

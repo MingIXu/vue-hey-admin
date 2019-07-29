@@ -41,13 +41,6 @@
             @click="create"
           >新增</el-button>
         </div>
-        <lg-table
-          :list="list"
-          :total-list="total"
-          columns-type="index"
-          :lg-thead="dictObj.dictThead"
-          :lg-buttons="dictObj.dictButtons"
-        />
         <el-table
           v-loading="listLoading"
           :data="list"
@@ -122,9 +115,8 @@
 <script>
 import { getList, getDicTypeTree, createOrUpdate, deleteByIds } from '@/api/dict'
 import Pagination from '@/components/Pagination'
-import lgTable from '@/views/components/lgTable'
 export default {
-  components: { Pagination, lgTable },
+  components: { Pagination },
   data() {
     return {
       columns: [
@@ -140,25 +132,25 @@ export default {
         update: 'Edit',
         create: 'Create'
       },
-      list: null,
+      list: [],
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 10,
-        keyWord: undefined,
-        type: undefined
+        keyWord: '',
+        type: null
       },
       rules: {
         valueCn: [{ required: true, message: 'valueCn is required', trigger: 'blur' }],
         key: [{ required: true, message: 'key is required', trigger: 'blur' }]
       },
       temp: {
-        id: undefined,
-        valueCn: undefined,
-        key: undefined,
-        typeKey: undefined,
-        orders: undefined
+        id: null,
+        valueCn: '',
+        key: '',
+        typeKey: '',
+        orders: ''
       },
       filterText: '',
       treeData: [],

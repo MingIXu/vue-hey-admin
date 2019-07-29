@@ -197,8 +197,10 @@ export default {
   },
   methods: {
     init() {
-      getTreeData().then(response => {
-        this.treeData = response.treeData
+      getTreeData().then(res => {
+        if (res.code === 200) {
+          this.treeData = res.treeData
+        }
       })
     },
     filterNode(value, data) {

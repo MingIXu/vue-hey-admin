@@ -2,7 +2,12 @@
   <div class="app-container">
     <div class="el-container">
       <el-aside width="200px" style="padding-top: 20px">
-        <el-input v-model="filterText" size="small" placeholder="输入关键字过滤" style="margin-bottom:30px;" />
+        <el-input
+          v-model="filterText"
+          size="small"
+          placeholder="输入关键字过滤"
+          style="margin-bottom:30px;"
+        />
         <el-tree
           ref="tree"
           :data="treeData"
@@ -14,17 +19,60 @@
         />
       </el-aside>
       <el-main>
-
         <!--搜索模块-->
         <div class="filter-container">
-          <el-input v-model="listQuery.keyWord" :placeholder="table.name" style="width: 200px;" class="filter-item el-input--small" @keyup.enter.native="handleFilter" />
-          <el-select v-model="listQuery.type" :placeholder="table.sex" clearable class="filter-item" size="small" style="width: 130px">
-            <el-option v-for="item in sexOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
+          <el-input
+            v-model="listQuery.keyWord"
+            :placeholder="table.name"
+            style="width: 200px;"
+            class="filter-item el-input--small"
+            @keyup.enter.native="handleFilter"
+          />
+          <el-select
+            v-model="listQuery.type"
+            :placeholder="table.sex"
+            clearable
+            class="filter-item"
+            size="small"
+            style="width: 130px"
+          >
+            <el-option
+              v-for="item in sexOptions"
+              :key="item.key"
+              :label="item.display_name+'('+item.key+')'"
+              :value="item.key"
+            />
           </el-select>
-          <el-button v-waves class="filter-item el-button--small" type="primary" icon="el-icon-search" @click="handleFilter">{{ table.search }}</el-button>
-          <el-button class="filter-item el-button--small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ table.add }}</el-button>
-          <el-button v-waves :loading="downloadLoading" class="filter-item el-button--small" type="primary" icon="el-icon-download" @click="handleDownload">{{ table.export }}</el-button>
-          <lgButton name="新增" class="filter-item el-button--small" style="margin-left: 10px;" type="primary" icon="el-icon-edit" permission-value="addRole1" />
+          <el-button
+            v-waves
+            class="filter-item el-button--small"
+            type="primary"
+            icon="el-icon-search"
+            @click="handleFilter"
+          >{{ table.search }}</el-button>
+          <el-button
+            class="filter-item el-button--small"
+            style="margin-left: 10px;"
+            type="primary"
+            icon="el-icon-edit"
+            @click="handleCreate"
+          >{{ table.add }}</el-button>
+          <el-button
+            v-waves
+            :loading="downloadLoading"
+            class="filter-item el-button--small"
+            type="primary"
+            icon="el-icon-download"
+            @click="handleDownload"
+          >{{ table.export }}</el-button>
+          <lgButton
+            name="新增"
+            class="filter-item el-button--small"
+            style="margin-left: 10px;"
+            type="primary"
+            icon="el-icon-edit"
+            permission-value="addRole1"
+          />
         </div>
 
         <!--主列表模块-->
@@ -66,32 +114,47 @@
           </el-table-column>
           <el-table-column :label="table.status" class-name="status-col" width="100">
             <template slot-scope="scope">
-              <el-tag :type="scope.row.status | statusColorFilter">{{ scope.row.status | statusFilter }}</el-tag>
+              <el-tag
+                :type="scope.row.status | statusColorFilter"
+              >{{ scope.row.status | statusFilter }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column :label="table.actions" align="center" width="230" class-name="small-padding fixed-width">
+          <el-table-column
+            :label="table.actions"
+            align="center"
+            width="230"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{ table.edit }}</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                @click="handleUpdate(scope.row)"
+              >{{ table.edit }}</el-button>
               <el-button
                 v-if="scope.row.status!='1'"
                 size="mini"
                 type="success"
                 @click="handleModifyStatus(scope.row,'1')"
-              >{{ table.normal }}
-              </el-button>
+              >{{ table.normal }}</el-button>
               <el-button
                 v-if="scope.row.status!='0'"
                 size="mini"
                 type="danger"
                 @click="handleModifyStatus(scope.row,'0')"
-              >{{ table.disable }}
-              </el-button>
+              >{{ table.disable }}</el-button>
             </template>
           </el-table-column>
         </el-table>
 
         <!--分页组件-->
-        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.limit"
+          @pagination="getList"
+        />
 
         <!--编辑新增弹出框-->
         <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -111,24 +174,46 @@
             </el-form-item>
             <el-form-item :label="table.sex">
               <el-select v-model="temp.sex" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in sexOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                <el-option
+                  v-for="item in sexOptions"
+                  :key="item.key"
+                  :label="item.display_name"
+                  :value="item.key"
+                />
               </el-select>
             </el-form-item>
             <el-form-item :label="table.status">
               <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                <el-option
+                  v-for="item in statusOptions"
+                  :key="item.key"
+                  :label="item.display_name"
+                  :value="item.key"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="角色">
-              <el-select v-model="temp.roles" multiple class="filter-item" placeholder="Please select">
-                <el-option v-for="item in rolesList" :key="item.id" :label="item.name" :value="item.id" />
+              <el-select
+                v-model="temp.roles"
+                multiple
+                class="filter-item"
+                placeholder="Please select"
+              >
+                <el-option
+                  v-for="item in rolesList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
               </el-select>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">{{ table.cancel }}</el-button>
-            <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ table.confirm }}
-            </el-button>
+            <el-button
+              type="primary"
+              @click="dialogStatus==='create'?createData():updateData()"
+            >{{ table.confirm }}</el-button>
           </div>
         </el-dialog>
 
@@ -279,10 +364,12 @@ export default {
     },
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.list
-        this.total = response.total
-
+      fetchList(this.listQuery).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          this.list = res.list
+          this.total = res.total
+        }
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
@@ -295,15 +382,16 @@ export default {
         limit: 9999
       }
       getRolesList(data).then(res => {
-        console.log(res)
         if (res.code === 200) {
           this.rolesList = res.list
         }
       })
     },
     getTreeData() {
-      getOrgTree().then(response => {
-        this.treeData = response.treeData
+      getOrgTree().then(res => {
+        if (res.code === 200) {
+          this.treeData = res.treeData
+        }
       })
     },
     handleFilter() {
@@ -315,13 +403,14 @@ export default {
       this.temp.id = row.id
       this.temp.status = status
       const tempData = Object.assign({}, this.temp)
-
-      updateUser(tempData).then(() => {
-        this.getList()
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
+      updateUser(tempData).then(res => {
+        if (res.code === 200) {
+          this.getList()
+          this.$message({
+            message: '操作成功',
+            type: 'success'
+          })
+        }
       })
     },
     sortChange(data) {

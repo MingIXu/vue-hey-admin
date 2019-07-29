@@ -171,10 +171,11 @@ const actions = {
   }) {
     return new Promise((resolve, reject) => {
       refreshToken().then(response => {
+        console.log(response)
         const data = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
-        resolve()
+        resolve(data)
       }).catch(error => {
         reject(error)
       })

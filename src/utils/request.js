@@ -1,7 +1,11 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import {
+  Message
+} from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import {
+  getToken
+} from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -35,7 +39,7 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
@@ -52,16 +56,13 @@ service.interceptors.response.use(
         type: 'error',
         duration: 10000
       })
-      // 刷新token
-      if (res.code === 1103) {
-        // to re-login
-        store.dispatch('user/refreshToken').then(() => {})
-      }
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 1102 || res.code === 1101 || res.code === 1100) {
         // to re-login
         store.dispatch('user/resetToken').then(() => {
-          location.reload()
+          setTimeout(() => {
+            location.reload()
+          }, 1500)
         })
       }
       return Promise.reject(new Error(res.msg || 'Error'))
