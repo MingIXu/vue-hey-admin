@@ -138,7 +138,6 @@ const actions = {
       filterButtons.map(p => {
         permissionButtons.push(p.permissionValue)
       })
-      console.log(filterButtons)
       commit('SET_PERMISSIONBUTTONS', permissionButtons)
       resolve(accessedRoutes)
     })

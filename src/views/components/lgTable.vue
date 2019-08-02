@@ -1,5 +1,5 @@
 <template>
-  <div class="tabel-container">
+  <div class="lg-tabel-container">
     <el-table
       :key="tableKey"
       ref="table"
@@ -34,7 +34,13 @@
         :label="thead.text"
       >
         <template slot-scope="scope">
-          <div>{{ scope.row[thead.label] }}</div>
+          <div v-if="thead.label === 'status'">
+            <el-tag :type="scope.row.status | statusFilter('tag')">{{ scope.row.status | statusFilter('text') }}</el-tag>
+          </div>
+          <div v-else-if="thead.label === 'sex'">
+            <span>{{ scope.row.sex | sexFilter }}</span>
+          </div>
+          <div v-else>{{ scope.row[thead.label] }}</div>
         </template>
       </el-table-column>
 
@@ -78,10 +84,35 @@
 </template>
 <script>
 import waves from '@/directive/waves' // 水波纹指令
+let _this
 export default {
   name: 'LgTable',
   directives: {
     waves
+  },
+  filters: {
+    statusFilter(val, key) {
+      const keyValue = _this.lgStatus.reduce((acc, cur) => {
+        acc[cur.status] = cur[key]
+        return acc
+      }, {})
+      return keyValue[val]
+    },
+    sexFilter(val) {
+      const sexOptions = [{
+        key: 0,
+        display_name: '男'
+      },
+      {
+        key: 1,
+        display_name: '女'
+      }]
+      const sexKeyValue = sexOptions.reduce((acc, cur) => {
+        acc[cur.key] = cur.display_name
+        return acc
+      }, {})
+      return sexKeyValue[val]
+    }
   },
   props: {
     // 表格数据
@@ -158,7 +189,16 @@ export default {
     lgStatus: {
       type: Array,
       default: function() {
-        return ['禁用', '启用']
+        return [{
+          status: 0,
+          text: '禁用',
+          tag: 'danger'
+        },
+        {
+          status: 1,
+          text: '启用',
+          tag: 'success'
+        }]
       }
     }
   },
@@ -173,12 +213,16 @@ export default {
   },
   computed: {
     // 通过vuex存储加载状态
+    // 切换加载状态：this.$store.commit('TOGGLE_LOADING', listLoading)
     listLoading() {
       return this.$store.getters.listLoading
     },
     permissionButtons() {
       return this.$store.state.permissionButtons
     }
+  },
+  beforeCreate() {
+    _this = this
   },
   created() {
     // 初始化页码、每页条数
@@ -244,11 +288,13 @@ export default {
 }
 </script>
 <style lang="scss">
-  .tabel-container {
-    padding: 20px;
+  .lg-tabel-container {
     .el-table th.is-leaf {
-      background-color: #f4f4f4;
+      // background-color: #f4f4f4;
       color: #666;
+    }
+    .el-table tr:nth-child(even) {
+      background-color: #FAFAFA;
     }
   }
 </style>

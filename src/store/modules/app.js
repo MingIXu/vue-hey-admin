@@ -6,7 +6,8 @@ const state = {
     withoutAnimation: false
   },
   device: 'desktop',
-  size: Cookies.get('size') || 'medium'
+  size: Cookies.get('size') || 'medium',
+  listLoading: false
 }
 
 const mutations = {
@@ -30,6 +31,9 @@ const mutations = {
   SET_SIZE: (state, size) => {
     state.size = size
     Cookies.set('size', size)
+  },
+  TOGGLE_LOADING: (state, listLoading) => {
+    state.listLoading = listLoading
   }
 }
 

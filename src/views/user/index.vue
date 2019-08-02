@@ -23,14 +23,14 @@
         <div class="filter-container">
           <el-input
             v-model="listQuery.keyWord"
-            :placeholder="table.name"
+            placeholder="用户名"
             style="width: 200px;"
             class="filter-item el-input--small"
             @keyup.enter.native="handleFilter"
           />
           <el-select
             v-model="listQuery.type"
-            :placeholder="table.sex"
+            placeholder="性别"
             clearable
             class="filter-item"
             size="small"
@@ -39,7 +39,7 @@
             <el-option
               v-for="item in sexOptions"
               :key="item.key"
-              :label="item.display_name+'('+item.key+')'"
+              :label="item.display_name"
               :value="item.key"
             />
           </el-select>
@@ -49,14 +49,14 @@
             type="primary"
             icon="el-icon-search"
             @click="handleFilter"
-          >{{ table.search }}</el-button>
+          >搜索</el-button>
           <el-button
             class="filter-item el-button--small"
             style="margin-left: 10px;"
             type="primary"
             icon="el-icon-edit"
             @click="handleCreate"
-          >{{ table.add }}</el-button>
+          >添加</el-button>
           <el-button
             v-waves
             :loading="downloadLoading"
@@ -64,7 +64,7 @@
             type="primary"
             icon="el-icon-download"
             @click="handleDownload"
-          >{{ table.export }}</el-button>
+          >导出</el-button>
           <lgButton
             name="新增"
             class="filter-item el-button--small"
@@ -76,88 +76,78 @@
         </div>
 
         <!--主列表模块-->
-        <el-table
-          :key="tableKey"
-          v-loading="listLoading"
-          :data="list"
-          border
-          fit
-          stripe
-          highlight-current-row
-          style="width: 100%;"
-          @sort-change="sortChange"
-        >
-          <el-table-column :label="table.id" prop="id" sortable="custom" align="center" width="85">
-            <template slot-scope="scope">
-              <span>{{ scope.row.id }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column :label="table.name" min-width="150px">
-            <template slot-scope="scope">
-              <span class="link-type" @click="handleUpdate(scope.row)">{{ scope.row.name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column :label="table.sex" min-width="50px">
-            <template slot-scope="scope">
-              <el-tag>{{ scope.row.sex | sexFilter }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column :label="table.createName" width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.createName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column :label="table.createTime" width="150px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column :label="table.status" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <el-tag
-                :type="scope.row.status | statusColorFilter"
-              >{{ scope.row.status | statusFilter }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            :label="table.actions"
-            align="center"
-            width="230"
-            class-name="small-padding fixed-width"
-          >
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                size="mini"
-                @click="handleUpdate(scope.row)"
-              >{{ table.edit }}</el-button>
-              <el-button
-                v-if="scope.row.status!='1'"
-                size="mini"
-                type="success"
-                @click="handleModifyStatus(scope.row,'1')"
-              >{{ table.normal }}</el-button>
-              <el-button
-                v-if="scope.row.status!='0'"
-                size="mini"
-                type="danger"
-                @click="handleModifyStatus(scope.row,'0')"
-              >{{ table.disable }}</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <!--分页组件-->
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.limit"
-          @pagination="getList"
+        <lgTable
+          columns-type="index"
+          columns-label="序号"
+          :list="list"
+          :total-list="total"
+          :lg-thead="userAttr.thead"
+          :lg-buttons="userAttr.buttons"
+          @operationEvent0="operationEvent0"
+          @operationEvent1="operationEvent1"
+          @operationEvent2="operationEvent2"
+          @operationEvent3="operationEvent3"
+          @initListQuery="initListQuery"
+          @getListByPagination="getListByPagination"
         />
-
         <!--编辑新增弹出框-->
-        <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+        <lgDialog
+          :title="textMap[dialogStatus]"
+          :visible="dialogFormVisible"
+          width="500px"
+          :show-form="true"
+          form-ref="dataForm"
+          :form-rules="rules"
+          label-width="70px"
+          :value="temp"
+          @on-sumbit="dialogStatus === 'create' ? createData() : updateData()"
+          @on-close="onClose"
+        >
+          <template slot="form">
+            <el-form-item :label="table.name" prop="name">
+              <el-input v-model="temp.name" />
+            </el-form-item>
+            <el-form-item :label="table.nick">
+              <el-input v-model="temp.nick" />
+            </el-form-item>
+            <el-form-item :label="table.sex">
+              <el-select v-model="temp.sex" class="filter-item" placeholder="Please select">
+                <el-option
+                  v-for="item in sexOptions"
+                  :key="item.key"
+                  :label="item.display_name"
+                  :value="item.key"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item :label="table.status">
+              <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
+                <el-option
+                  v-for="item in statusOptions"
+                  :key="item.key"
+                  :label="item.display_name"
+                  :value="item.key"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="角色">
+              <el-select
+                v-model="temp.roles"
+                multiple
+                class="filter-item"
+                placeholder="Please select"
+              >
+                <el-option
+                  v-for="item in rolesList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </template>
+        </lgDialog>
+        <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
           <el-form
             ref="dataForm"
             :rules="rules"
@@ -215,100 +205,142 @@
               @click="dialogStatus==='create'?createData():updateData()"
             >{{ table.confirm }}</el-button>
           </div>
-        </el-dialog>
-
-        <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-          <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-            <el-table-column prop="key" label="Channel" />
-            <el-table-column prop="pv" label="Pv" />
-          </el-table>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="dialogPvVisible = false">{{ table.confirm }}</el-button>
-          </span>
-        </el-dialog>
+        </el-dialog>-->
       </el-main>
     </div>
   </div>
 </template>
 
 <script>
-import { fetchList, createUser, updateUser, getOrgTree, getUserRole } from '@/api/user'
+import { getOrgTree, getUserRole } from '@/api/user'
+import { list, create, update, remove } from '@/api/common'
 import { getList as getRolesList } from '@/api/role'
 import waves from '@/directive/waves' // Waves directive
 import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import lgButton from '@/views/components/lgButton'
-const sexOptions = [
-  { key: 0, display_name: '男' },
-  { key: 1, display_name: '女' }
-]
-const statusOptions = [
-  { key: 0, display_name: '禁用' },
-  { key: 1, display_name: '启用' }
-]
-
-// arr to obj ,such as { CN : "China", US : "USA" }
-const sexKeyValue = sexOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
-
-const statusKeyValue = statusOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
+import lgTable from '@/views/components/lgTable'
+import lgDialog from '@/views/components/lgDialog'
 
 export default {
-  components: { Pagination, lgButton },
+  components: { lgButton, lgTable, lgDialog },
   directives: { waves },
-  filters: {
-    statusColorFilter(status) {
-      const statusMap = {
-        1: 'success',
-        0: 'danger'
-      }
-      return statusMap[status]
-    },
-    statusFilter(status) {
-      return statusKeyValue[status]
-    },
-    sexFilter(type) {
-      return sexKeyValue[type]
-    }
-  },
   data() {
     return {
-      tableKey: 0,
-      list: null,
+      apiUri: 'user',
+      list: [],
       total: 0,
-      listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 10,
-        keyWord: undefined,
-        type: undefined,
-        departmentId: undefined,
+        current: 1,
+        pageSize: 10
+      },
+      filters: {
+        keyWord: '',
+        type: null,
+        departmentId: null,
         sort: '+id'
       },
-      sexOptions,
-      statusOptions,
-      showReviewer: false,
       temp: {
-        id: undefined,
-        name: undefined,
-        nick: undefined,
-        sex: undefined,
-        status: undefined,
+        id: null,
+        name: '',
+        nick: '',
+        sex: null,
+        status: null,
         roles: []
+      },
+      statusOptions: [{
+        key: 0,
+        display_name: '禁用'
+      },
+      {
+        key: 1,
+        display_name: '启用'
+      }],
+      sexOptions: [{
+        key: 0,
+        display_name: '男'
+      },
+      {
+        key: 1,
+        display_name: '女'
+      }],
+      userAttr: {
+        thead: [
+          {
+            label: 'name',
+            text: '用户名',
+            width: 100
+          },
+          {
+            label: 'nick',
+            text: '名字'
+          },
+          {
+            label: 'sex',
+            text: '性别'
+          },
+          {
+            label: 'createName',
+            text: '创建人'
+          },
+          {
+            label: 'createTime',
+            text: '创建时间',
+            width: 200
+          },
+          {
+            label: 'status',
+            text: '状态'
+          }
+        ],
+        buttons: {
+          status: true, // 是否区分操作状态 true：根据当前列的数据状态值使用operation[状态值]; false：使用operation[0]
+          width: 300, // 表格操作列的宽度
+          operation: { // 操作按钮配置
+            0: [{
+              name: 'editor',
+              text: '编辑',
+              id: 0,
+              type: 'primary'
+            },
+            {
+              name: 'enable',
+              text: '启用',
+              id: 1,
+              type: 'success'
+            },
+            {
+              name: 'delete',
+              text: '删除',
+              id: 3,
+              type: 'danger'
+            }],
+            1: [{
+              name: 'editor',
+              text: '编辑',
+              id: 0,
+              type: 'primary'
+            }, {
+              name: 'disable',
+              text: '禁用',
+              id: 2,
+              type: ''
+            },
+            {
+              name: 'delete',
+              text: '删除',
+              id: 3,
+              type: 'danger'
+            }]
+          }
+        }
       },
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑',
+        create: '添加'
       },
       dialogPvVisible: false,
-      pvData: [],
       rules: {
         name: [{ required: true, message: 'name is required', trigger: 'change' }],
         type: [{ required: true, message: 'type is required', trigger: 'change' }],
@@ -354,28 +386,144 @@ export default {
     this.getRolesList()
   },
   methods: {
-    filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
+    // 初始化页数与条数
+    initListQuery(listQuery) {
+      this.listQuery = listQuery
     },
-    handleNodeClick(data) {
-      this.listQuery.departmentId = data.id
+    // 分页操作
+    getListByPagination(listQuery) {
+      this.listQuery = listQuery
       this.getList()
     },
+    // 过滤列表
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getList()
+    },
+    // 获取列表
     getList() {
-      this.listLoading = true
-      fetchList(this.listQuery).then(res => {
-        console.log(res)
+      const params = Object.assign({}, this.listQuery, this.filters)
+      list(this.apiUri, params).then(res => {
         if (res.code === 200) {
           this.list = res.list
           this.total = res.total
         }
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 0.5 * 1000)
       })
     },
+    // 编辑
+    operationEvent0(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      getUserRole(this.temp.id).then(res => {
+        if (res.code === 200) {
+          this.temp.roles = res.roles
+        }
+      })
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+    },
+    // 启用
+    operationEvent1(row) {
+      const params = {
+        id: row.id,
+        status: 1
+      }
+      update(this.apiUri, params).then(res => {
+        if (res.code === 200) {
+          this.getList()
+          this.$notify({
+            title: '成功',
+            message: '启用成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    // 禁用
+    operationEvent2(row) {
+      const params = {
+        id: row.id,
+        status: 0
+      }
+      update(this.apiUri, params).then(res => {
+        if (res.code === 200) {
+          this.getList()
+          this.$notify({
+            title: '成功',
+            message: '禁用成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    // 删除
+    operationEvent3(row) {
+      remove(row.id).then(res => {
+        if (res.code === 200) {
+          this.getList()
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    // 添加
+    handleCreate() {
+      this.resetForm()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
+    },
+    // 添加提交
+    createData() {
+      const data = Object.assign({}, this.temp)
+      create(this.apiUri, data).then(res => {
+        if (res.code === 200) {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '创建成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    // 编辑提交
+    updateData() {
+      const data = Object.assign({}, this.temp)
+      update(this.apiUri, data).then(res => {
+        if (res.code === 200) {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    onClose() {
+      this.dialogFormVisible = false
+    },
+    // 清空弹框表单
+    resetForm() {
+      this.temp = {
+        id: null,
+        name: '',
+        nick: '',
+        sex: null,
+        status: null,
+        roles: []
+      }
+    },
+    // 获取角色列表
     getRolesList() {
       const data = {
         page: 1,
@@ -387,6 +535,17 @@ export default {
         }
       })
     },
+    // 树数据过滤
+    filterNode(value, data) {
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
+    },
+    // 树选中事件
+    handleNodeClick(data) {
+      this.filters.departmentId = data.id
+      this.getList()
+    },
+    // 获取树数据列表
     getTreeData() {
       getOrgTree().then(res => {
         if (res.code === 200) {
@@ -394,118 +553,11 @@ export default {
         }
       })
     },
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-    handleModifyStatus(row, status) {
-      this.resetTemp()
-      this.temp.id = row.id
-      this.temp.status = status
-      const tempData = Object.assign({}, this.temp)
-      updateUser(tempData).then(res => {
-        if (res.code === 200) {
-          this.getList()
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          })
-        }
-      })
-    },
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
-    },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        name: undefined,
-        nick: undefined,
-        sex: undefined,
-        status: undefined,
-        roles: []
-      }
-    },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          createUser(this.temp).then(() => {
-            this.getList()
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      getUserRole(this.temp.id).then(res => {
-        if (res.code === 200) {
-          this.temp.roles = res.roles
-        }
-      })
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          updateUser(tempData).then(() => {
-            this.getList()
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleDelete(row) {
-      this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000
-      })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
-    },
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const tHeader = ['序号', '用户名', '姓名', '性别', '创建人', '创建时间', '状态']
+        const filterVal = ['id', 'name', 'nick', 'sex', 'createName', 'createTime', 'status']
         const data = this.formatJson(filterVal, this.list)
         excel.export_json_to_excel({
           header: tHeader,
@@ -517,8 +569,20 @@ export default {
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
+        if (j === 'createTime') {
           return parseTime(v[j])
+        } else if (j === 'sex') {
+          const sexKeyValue = this.sexOptions.reduce((acc, cur) => {
+            acc[cur.key] = cur.display_name
+            return acc
+          }, {})
+          return sexKeyValue[v[j]]
+        } else if (j === 'status') {
+          const sexKeyValue = this.statusOptions.reduce((acc, cur) => {
+            acc[cur.key] = cur.display_name
+            return acc
+          }, {})
+          return sexKeyValue[v[j]]
         } else {
           return v[j]
         }

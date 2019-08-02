@@ -1,10 +1,13 @@
 import request from '@/utils/request'
 
 export function fetchList(query) {
+  const params = Object.assign({}, query)
+  delete params.current
+  delete params.pageSize
   return request({
-    url: '/user/page/' + query.page + '/' + query.limit,
+    url: '/user/page/' + query.current + '/' + query.pageSize,
     method: 'get',
-    params: query
+    params: params
   })
 }
 
