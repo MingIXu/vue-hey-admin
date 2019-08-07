@@ -236,8 +236,7 @@ export default {
       filters: {
         keyWord: '',
         type: null,
-        departmentId: null,
-        sort: '+id'
+        departmentId: null
       },
       temp: {
         id: null,

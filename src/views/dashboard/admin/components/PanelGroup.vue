@@ -9,7 +9,7 @@
           <div class="card-panel-text">
             New Visits
           </div>
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="1024001" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
