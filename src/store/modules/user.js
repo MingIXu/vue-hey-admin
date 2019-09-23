@@ -55,7 +55,7 @@ const actions = {
         username: username.trim(),
         password: password
       }).then(response => {
-        const data = response
+        const data = response.data
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
@@ -66,49 +66,15 @@ const actions = {
   },
 
   // get user info
-  // getInfo({
-  //   commit,
-  //   state
-  // }) {
-  //   return new Promise((resolve, reject) => {
-  //     getInfo(state.token).then(response => {
-  //       const data = response
-
-  //       if (!data) {
-  //         reject('Verification failed, please Login again.')
-  //       }
-  //       const {
-  //         roles,
-  //         name,
-  //         avatar
-  //       } = data.user
-
-  //       if (!roles || roles.length <= 0) {
-  //         reject('getInfo: roles must be a non-null array!')
-  //       }
-  //       // roles must be a non-empty array
-  //       commit('SET_ROLES', roles)
-  //       commit('SET_NAME', name)
-  //       commit('SET_AVATAR', avatar)
-  //       commit('SET_INTRODUCTION', '阿啦啦啦阿拉')
-
-  //       resolve(data.user)
-  //     }).catch(error => {
-  //       reject(error)
-  //     })
-  //   })
-  // },
-
-  // get user info
   getInfo({
     commit
   }) {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
-        const data = response
+        const data = response.data
 
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('暂无该用户～')
         }
         const {
           name,
@@ -121,9 +87,9 @@ const actions = {
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', '阿啦啦啦阿拉')
         getPermissionByUserId().then(res => {
-          const permissionRouter = res.list
+          const permissionRouter = res.data.list
           if (!permissionRouter || permissionRouter.length <= 0) {
-            reject('getInfo: roles must be a non-null array!')
+            reject('暂无权限，请联系相关人员～')
           }
           data.user.permissionRouter = permissionRouter
           resolve(data)

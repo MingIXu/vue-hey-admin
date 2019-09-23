@@ -189,3 +189,67 @@ aside {
 .multiselect--active {
   z-index: 1000 !important;
 }
+
+// container
+.lg-container{
+  height: 100%;
+  width: 100%;
+  padding: 15px;
+  background-color: #f0f2f5;
+  box-sizing: border-box;
+  .lg-container-white {
+    height: 100%;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    overflow-y: scroll;
+    padding: 15px;
+  }
+}
+
+// 多行文本框
+#lgTextarea {
+  resize: none;
+  height: 100px;
+}
+
+// 链接样式
+.link-type,
+.link-type:focus {
+  color: #337ab7 !important;
+  cursor: pointer !important;
+
+  &:hover {
+    color: rgb(32, 160, 255) !important;
+  }
+}
+
+// 溢出隐藏
+.lgEllipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lgEllipsisTwo {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.lgEllipsisThree {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+// 空数据
+.lgNullData {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  color: #666666;
+  font-size: .7rem;
+  margin: 2rem 0;
+}

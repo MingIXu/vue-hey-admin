@@ -40,7 +40,14 @@
           <div v-else-if="thead.label === 'sex'">
             <span>{{ scope.row.sex | sexFilter }}</span>
           </div>
-          <div v-else>{{ scope.row[thead.label] }}</div>
+          <div v-else>
+            <router-link
+              v-if="thead.router"
+              :to="thead.router"
+              style="color: #35C4E8;text-decoration: underline;"
+            >{{ scope.row[thead.label] }}</router-link>
+            <span v-else>{{ scope.row[thead.label] }}</span>
+          </div>
         </template>
       </el-table-column>
 
@@ -167,7 +174,7 @@ export default {
       default: function() {
         return [{
           status: true, // 是否区分操作状态 true：根据当前列的数据状态值使用operation[状态值]; false：使用operation[0]
-          width: 300, // 表格操作列的宽度
+          width: 100, // 表格操作列的宽度
           operation: { // 操作按钮配置
             0: [{
               name: 'enable',
@@ -290,7 +297,7 @@ export default {
 <style lang="scss">
   .lg-tabel-container {
     .el-table th.is-leaf {
-      // background-color: #f4f4f4;
+      background-color: #ecf0f7;
       color: #666;
     }
     .el-table tr:nth-child(even) {

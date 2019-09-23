@@ -1,11 +1,16 @@
 <template>
   <el-dialog :title="title" :visible.sync="visible" :width="width" :before-close="close">
-    <el-form v-if="showForm" id="formRef" :ref="formRef" :rules="formRules" :model="value" :label-width="labelWidth">
+    <el-form
+      v-if="showForm"
+      id="formRef"
+      :ref="formRef"
+      :rules="formRules"
+      :model="value"
+      :label-width="labelWidth"
+    >
       <slot name="form" />
     </el-form>
-    <span v-else>
-      <slot />
-    </span>
+    <slot v-else />
     <span v-if="action" slot="footer" class="dialog-footer">
       <slot name="action">
         <el-button @click="close">取消</el-button>
@@ -53,7 +58,7 @@ export default {
     // 表单标题长度
     labelWidth: {
       type: String,
-      default: '600px'
+      default: '100px'
     },
     // 表单数据对象
     value: {
@@ -73,9 +78,11 @@ export default {
       if (!val) {
         this.$emit('on-close')
       } else {
-        this.$nextTick(() => {
-          this.$refs[this.formRef].clearValidate()
-        })
+        if (this.showForm) {
+          this.$nextTick(() => {
+            this.$refs[this.formRef].clearValidate()
+          })
+        }
       }
     },
     value(val) {
@@ -90,11 +97,11 @@ export default {
       if (this.showForm) {
         this.$refs[this.formRef].validate((valid) => {
           if (valid) {
-            this.$emit('on-sumbit')
+            this.$emit('on-submit')
           }
         })
       } else {
-        this.$emit('on-sumbit')
+        this.$emit('on-submit')
       }
     }
   }

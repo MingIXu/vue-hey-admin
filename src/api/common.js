@@ -5,7 +5,7 @@ import request from '@/utils/request'
  * @param { Object } params 接口参数(get请求)
  * @param { Object } data 接口参数(post请求)
  * @param { Number } id 某条数据ID
- * import { list, create, remove, update, read } from '@/api/common' 快捷引入方法
+ * import { list, createOrUpdate, remove, read } from '@/api/common' 快捷引入方法
  */
 
 // 查询数据
@@ -20,10 +20,10 @@ export function list(port, params) {
   })
 }
 
-// 新增数据
-export function create(port, data) {
+// 新增或更新数据
+export function createOrUpdate(port, data) {
   return request({
-    url: `/${port}/create`,
+    url: `/${port}/createOrUpdate`,
     method: 'post',
     data
   })
@@ -34,15 +34,6 @@ export function remove(port, id) {
   return request({
     url: `/${port}/delete/${id}`,
     method: 'post'
-  })
-}
-
-// 更新数据
-export function update(port, data) {
-  return request({
-    url: `/${port}/update`,
-    method: 'post',
-    data
   })
 }
 
