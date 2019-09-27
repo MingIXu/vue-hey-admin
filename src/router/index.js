@@ -120,38 +120,33 @@ export const asyncRoutes = [
     alwaysShow: true, // will always show the root menu
     name: 'SystemManage',
     meta: {
-      title: 'SystemManage',
-      icon: 'component',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      title: '系统管理',
+      icon: 'component'
     },
     children: [
       {
         path: 'role',
         name: 'Role',
         component: () => import('@/views/system/role'),
-        meta: { title: 'Role', icon: 'password' },
-        roles: ['admin']
+        meta: { title: '角色管理', icon: 'password' }
       },
       {
         path: 'user',
         name: 'User',
         component: () => import('@/views/system/user'),
-        meta: { title: 'User', icon: 'user' },
-        roles: ['admin']
+        meta: { title: '用户管理', icon: 'user' }
       },
       {
         path: 'permission',
         name: 'Permission',
         component: () => import('@/views/system/permission'),
-        meta: { title: 'Permission', icon: 'nested' },
-        roles: ['admin']
+        meta: { title: '权限管理', icon: 'nested' }
       },
       {
-        path: 'dict',
-        name: 'Dict',
-        component: () => import('@/views/system/dict'),
-        meta: { title: 'dict', icon: 'table' },
-        roles: ['admin']
+        path: 'dictionary',
+        name: 'Dictionary',
+        component: () => import('@/views/system/dictionary'),
+        meta: { title: '字典管理', icon: 'table' }
       }
     ]
   },
