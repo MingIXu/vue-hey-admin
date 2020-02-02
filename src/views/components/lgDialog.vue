@@ -1,23 +1,18 @@
-<template>
-  <el-dialog :title="title" :visible.sync="visible" :width="width" :before-close="close">
-    <el-form
-      v-if="showForm"
-      id="formRef"
-      :ref="formRef"
-      :rules="formRules"
-      :model="value"
-      :label-width="labelWidth"
-    >
-      <slot name="form" />
-    </el-form>
-    <slot v-else />
-    <span v-if="action" slot="footer" class="dialog-footer">
-      <slot name="action">
-        <el-button @click="close">取消</el-button>
-        <el-button type="primary" @click="submitForm">确定</el-button>
-      </slot>
-    </span>
-  </el-dialog>
+<template lang="pug">
+  el-dialog(:title="title" :visible.sync="visible" :width="width" :before-close="close")
+    div(v-loading="loadingAll" element-loading-text="加载中...")
+      el-form(v-if="showForm"
+        id="formRef"
+        :ref="formRef"
+        :rules="formRules"
+        :model="value"
+        :label-width="labelWidth")
+        slot(name="form")
+      slot(v-else)
+    span.dialog-footer(v-if="action" slot="footer")
+      slot(name="action")
+        el-button(@click="close") 取消
+        el-button(type="primary" @click="submitForm") 确定
 </template>
 <script>
 export default {
@@ -71,6 +66,12 @@ export default {
     action: {
       type: Boolean,
       default: true
+    }
+  },
+  computed: {
+    // 通过vuex存储加载状态
+    loadingAll() {
+      return this.$store.getters.loadingAll
     }
   },
   watch: {

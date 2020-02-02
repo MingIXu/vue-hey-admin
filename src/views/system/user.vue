@@ -1,55 +1,25 @@
-<template>
-  <div class="lg-container">
-    <div class="lg-container-white">
-      <el-container>
-        <el-aside width="200px" style="padding-top: 20px">
-          <el-input
-            v-model="filterText"
-            size="small"
-            placeholder="输入关键字过滤"
-            style="margin-bottom:30px;"
-          />
-          <el-tree
-            ref="tree"
+<template lang="pug">
+  .lg-container
+    .lg-container-white
+      el-container
+        el-aside(width="200px" style="padding-top: 20px")
+          el-input(v-model="filterText" placeholder="输入关键字过滤" style="margin-bottom:30px;")
+          el-tree.filter-tree(ref="tree"
             :data="treeData"
+            v-loading="treeLoading"
+            element-loading-text="加载中..."
             :props="defaultProps"
             :filter-node-method="filterNode"
             :expand-on-click-node="false"
-            class="filter-tree"
             highlight-current
             default-expand-all
-            @node-click="handleNodeClick"
-          />
-        </el-aside>
-        <el-main>
-          <!--搜索模块-->
-          <div class="filter-container">
-            <el-input
-              v-model="filters.keyWord"
-              placeholder="输入关键字过滤"
-              style="width: 200px;"
-              class="filter-item el-input--small"
-              @keyup.enter.native="handleFilter"
-            />
-            <el-button
-              v-waves
-              class="filter-item el-button--small"
-              type="primary"
-              icon="el-icon-search"
-              @click="handleFilter"
-            >搜索</el-button>
-            <el-button
-              class="filter-item el-button--small"
-              style="margin-left: 10px;"
-              type="primary"
-              icon="el-icon-plus"
-              @click="handleCreate"
-            >新增</el-button>
-          </div>
-
-          <!--主列表模块-->
-          <lgTable
-            columns-type="index"
+            @node-click="handleNodeClick")
+        el-main
+          .filter-container
+            el-input.filter-item(v-model="filters.keyWord" placeholder="输入关键字过滤" style="width: 200px;" @keyup.enter.native="handleFilter")
+            el-button.filter-item(style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="handleFilter") 搜索
+            el-button.filter-item(v-permission="'add'" type="primary" icon="el-icon-plus" @click="handleCreate") 新增
+          lgTable(columns-type="index"
             columns-label="序号"
             :list="list"
             :total-list="total"
@@ -60,11 +30,8 @@
             @operationEvent2="operationEvent2"
             @operationEvent3="operationEvent3"
             @initListQuery="initListQuery"
-            @getListByPagination="getListByPagination"
-          />
-          <!--编辑新增弹出框-->
-          <lgDialog
-            :title="textMap[dialogTitle]"
+            @getListByPagination="getListByPagination")
+          lgDialog(:title="textMap[dialogTitle]"
             :visible="dialogFormVisible"
             width="500px"
             :show-form="true"
@@ -73,65 +40,40 @@
             label-width="70px"
             :value="dataForm"
             @on-submit="handleCreateOrUpdate"
-            @on-close="onClose"
-          >
-            <template slot="form">
-              <el-form-item label="用户名" prop="name">
-                <el-input v-model="dataForm.name" />
-              </el-form-item>
-              <el-form-item label="真实名字" prop="nice">
-                <el-input v-model="dataForm.nick" />
-              </el-form-item>
-              <el-form-item label="性别">
-                <el-select v-model="dataForm.sex" class="filter-item" placeholder="Please select">
-                  <el-option
-                    v-for="item in userConst.sexOptions"
+            @on-close="onClose")
+            template(slot="form")
+              el-form-item(label="用户名" prop="name")
+                el-input(v-model="dataForm.name")
+              el-form-item(label="真实名字" prop="nice")
+                el-input(v-model="dataForm.nice")
+              el-form-item(label="性别" prop="sex")
+                el-select(v-model="dataForm.sex" placeholder="请选择")
+                  el-option(v-for="item in userConst.sexOptions"
                     :key="item.key"
                     :label="item.valueCn"
-                    :value="item.key"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="状态">
-                <el-select v-model="dataForm.status" class="filter-item" placeholder="Please select">
-                  <el-option
-                    v-for="item in userConst.statusOptions"
+                    :value="item.key")
+              el-form-item(label="状态")
+                el-select(v-model="dataForm.status" placeholder="请选择")
+                  el-option(v-for="item in userConst.statusOptions"
                     :key="item.key"
                     :label="item.valueCn"
-                    :value="item.key"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="角色">
-                <el-select
-                  v-model="dataForm.roles"
-                  multiple
-                  class="filter-item"
-                  placeholder="Please select"
-                >
-                  <el-option
-                    v-for="item in rolesList"
+                    :value="item.key")
+              el-form-item(label="角色")
+                el-select(v-model="dataForm.roles" multiple placeholder="请选择")
+                  el-option(v-for="item in rolesList"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id"
-                  />
-                </el-select>
-              </el-form-item>
-            </template>
-          </lgDialog>
-        </el-main>
-      </el-container>
-    </div>
-  </div>
+                    :value="item.id")
 </template>
 
 <script>
 import { getOrgTree, getUserRole } from '@/api/system'
 import { list, createOrUpdate, remove } from '@/api/common'
-import waves from '@/directive/waves' // Waves directive
+import { userConst } from '@/views/system/columnsConst'
 import lgTable from '@/views/components/lgTable'
 import lgDialog from '@/views/components/lgDialog'
-import { userConst } from '@/views/system/columnsConst'
+import permission from '@/directive/permission'
+import waves from '@/directive/waves'
 const defaultForm = {
   id: null,
   name: '',
@@ -142,7 +84,10 @@ const defaultForm = {
 }
 export default {
   components: { lgTable, lgDialog },
-  directives: { waves },
+  directives: {
+    waves,
+    permission
+  },
   data() {
     return {
       userConst,
@@ -175,7 +120,8 @@ export default {
         children: 'children',
         label: 'label'
       },
-      rolesList: []
+      rolesList: [],
+      treeLoading: false
     }
   },
   watch: {
@@ -205,6 +151,7 @@ export default {
     },
     // 获取列表
     getList() {
+      this.$store.dispatch('app/toggleLoading', true)
       const params = Object.assign({}, this.listQuery, this.filters)
       list(this.apiUri, params).then(res => {
         if (res.code === 200) {
@@ -215,14 +162,15 @@ export default {
     },
     // 编辑
     operationEvent0(row) {
-      this.dataForm = Object.assign({}, row) // copy obj
+      this.dataForm = Object.assign({}, row)
+      this.dialogTitle = 'update'
+      this.dialogFormVisible = true
+      this.$store.dispatch('app/toggleLoadingAll', true)
       getUserRole(this.dataForm.id).then(res => {
         if (res.code === 200) {
           this.dataForm.roles = res.data.roles
         }
       })
-      this.dialogTitle = 'update'
-      this.dialogFormVisible = true
     },
     // 启用
     operationEvent1(row) {
@@ -337,9 +285,11 @@ export default {
     },
     // 获取树数据列表
     getTreeData() {
+      this.treeLoading = true
       getOrgTree().then(res => {
         if (res.code === 200) {
           this.treeData = res.data.treeData
+          this.treeLoading = false
         }
       })
     }

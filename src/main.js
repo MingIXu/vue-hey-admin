@@ -28,12 +28,12 @@ import * as utils from './utils/globalUtil' // global utils
  * please remove it before going online! ! !
  */
 import { mockXHR } from '../mock'
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'development') {
   mockXHR()
 }
 
 Vue.use(Element, {
-  size: Cookies.get('size') || 'medium' // set element-ui default size
+  size: Cookies.get('size') || 'small' // set element-ui default size
 })
 
 // register global utility filters

@@ -88,6 +88,13 @@ module.exports = {
       })
       .end()
 
+    config.module
+      .rule('pug')
+      .test(/\.pug$/)
+      .use('pug-html-loader')
+      .loader('pug-html-loader')
+      .end()
+
     config
       // https://webpack.js.org/configuration/devtool/#development
       .when(process.env.NODE_ENV === 'development',

@@ -1,54 +1,27 @@
-<template>
-  <div class="lg-container">
-    <div class="lg-container-white">
-      <el-container>
-        <el-aside width="200px" style="padding-top: 20px">
-          <el-input
-            v-model="filterText"
+<template lang="pug">
+  .lg-container
+    .lg-container-white
+      el-container
+        el-aside(width="200px" style="padding-top: 20px")
+          el-input(v-model="filterText"
             size="small"
             placeholder="输入关键字过滤"
-            style="margin-bottom:30px;"
-          />
-          <el-tree
-            ref="tree"
+            style="margin-bottom:30px;")
+          el-tree.filter-tree(ref="tree"
             :data="treeData"
+            v-loading="treeLoading"
+            element-loading-text="加载中..."
             :props="defaultProps"
             :filter-node-method="filterNode"
-            class="filter-tree"
             default-expand-all
             highlight-current
-            @node-click="handleNodeClick"
-          />
-        </el-aside>
-        <el-main>
-          <!--搜索模块-->
-          <div class="filter-container">
-            <el-input
-              v-model="filters.keyWord"
-              placeholder="输入关键字过滤"
-              style="width: 200px;"
-              class="filter-item el-input--small"
-              @keyup.enter.native="handleFilter"
-            />
-            <el-button
-              v-waves
-              class="filter-item el-button--small"
-              type="primary"
-              icon="el-icon-search"
-              @click="handleFilter"
-            >搜索</el-button>
-            <el-button
-              v-waves
-              class="filter-item el-button--small"
-              style="margin-left: 10px;"
-              type="primary"
-              icon="el-icon-plus"
-              @click="handleCreate"
-            >新增</el-button>
-          </div>
-          <!--主列表模块-->
-          <lgTable
-            columns-type="index"
+            @node-click="handleNodeClick")
+        el-main
+          .filter-container
+            el-input.filter-item(v-model="filters.keyWord" placeholder="输入关键字过滤" style="width: 200px;" @keyup.enter.native="handleFilter")
+            el-button.filter-item(style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="handleFilter") 搜索
+            el-button.filter-item(type="primary" icon="el-icon-plus" @click="handleCreate") 新增
+          lgTable(columns-type="index"
             columns-label="序号"
             :list="list"
             :total-list="total"
@@ -57,11 +30,8 @@
             @operationEvent0="operationEvent0"
             @operationEvent1="operationEvent1"
             @initListQuery="initListQuery"
-            @getListByPagination="getListByPagination"
-          />
-          <!--编辑新增弹出框-->
-          <lgDialog
-            :title="textMap[dialogTitle]"
+            @getListByPagination="getListByPagination")
+          lgDialog(:title="textMap[dialogTitle]"
             :visible="dialogFormVisible"
             width="500px"
             :show-form="true"
@@ -70,29 +40,18 @@
             label-width="120px"
             :value="dataForm"
             @on-submit="handleCreateOrUpdate"
-            @on-close="onClose"
-          >
-            <template slot="form">
-              <el-form-item label="字典名称" prop="valueCn">
-                <el-input v-model="dataForm.valueCn" />
-              </el-form-item>
-              <el-form-item label="字典值" prop="key">
-                <el-input v-model="dataForm.key" />
-              </el-form-item>
-              <el-form-item label="字典排序">
-                <el-input v-model="dataForm.orders" />
-              </el-form-item>
-            </template>
-          </lgDialog>
-        </el-main>
-      </el-container>
-    </div>
-  </div>
+            @on-close="onClose")
+            template(slot="form")
+              el-form-item(label="字典名称" prop="valueCn")
+                el-input(v-model="dataForm.valueCn")
+              el-form-item(label="字典值" prop="key")
+                el-input(v-model="dataForm.key")
+              el-form-item(label="字典排序" prop="orders")
+                el-input(v-model="dataForm.orders")
 </template>
 <script>
 import { list, createOrUpdate, remove } from '@/api/common'
 import { getDicTypeTree } from '@/api/system'
-import waves from '@/directive/waves'
 import lgTable from '@/views/components/lgTable'
 import lgDialog from '@/views/components/lgDialog'
 import { dictionaryConst } from '@/views/system/columnsConst'
@@ -106,7 +65,6 @@ const defaultForm = {
 }
 export default {
   components: { lgTable, lgDialog },
-  directives: { waves },
   data() {
     return {
       dictionaryConst,
@@ -145,7 +103,8 @@ export default {
       treeData: [],
       defaultProps: {
         label: 'label'
-      }
+      },
+      treeLoading: false
     }
   },
   watch: {
@@ -160,8 +119,10 @@ export default {
   methods: {
     // 获取树
     getTreeData() {
+      this.treeLoading = true
       getDicTypeTree().then(response => {
         this.treeData = response.data.treeData
+        this.treeLoading = false
       })
     },
     // 过滤树
@@ -191,6 +152,7 @@ export default {
     },
     // 获取列表
     getList() {
+      this.$store.dispatch('app/toggleLoading', true)
       const params = Object.assign({}, this.listQuery, this.filters)
       list(this.apiUri, params).then(res => {
         if (res.code === 200) {

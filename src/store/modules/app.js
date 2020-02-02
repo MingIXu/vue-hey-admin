@@ -6,8 +6,9 @@ const state = {
     withoutAnimation: false
   },
   device: 'desktop',
-  size: Cookies.get('size') || 'medium',
-  listLoading: false
+  size: Cookies.get('size') || 'small',
+  listLoading: false,
+  loadingAll: false
 }
 
 const mutations = {
@@ -34,6 +35,9 @@ const mutations = {
   },
   TOGGLE_LOADING: (state, listLoading) => {
     state.listLoading = listLoading
+  },
+  TOGGLE_LOADINGALL: (state, loadingAll) => {
+    state.loadingAll = loadingAll
   }
 }
 
@@ -49,6 +53,12 @@ const actions = {
   },
   setSize({ commit }, size) {
     commit('SET_SIZE', size)
+  },
+  toggleLoading({ commit }, listLoading) {
+    commit('TOGGLE_LOADING', listLoading)
+  },
+  toggleLoadingAll({ commit }, loadingAll) {
+    commit('TOGGLE_LOADINGALL', loadingAll)
   }
 }
 

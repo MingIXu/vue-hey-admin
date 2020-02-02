@@ -1,7 +1,6 @@
-<template>
-  <div class="lg-tabel-container">
-    <el-table
-      :key="tableKey"
+<template lang="pug">
+  .lg-tabel-container
+    el-table(:key="tableKey"
       ref="table"
       v-loading="listLoading"
       :data="list"
@@ -13,70 +12,27 @@
       style="width: 100%"
       @select="getRow"
       @select-all="getRow"
-      @row-click="getRowClick"
-    >
-      <!-- 表格第一列 -->
-      <el-table-column
-        v-if="hasSelection"
-        :label="columnsLabel"
-        align="center"
-        :type="columnsType"
-        :index="indexMethod"
-        width="55"
-      />
-      <!-- 表格头部 -->
-      <el-table-column
-        v-for="thead in lgThead"
-        :key="thead.label"
-        :width="thead.width || &quot;&quot;"
-        class-name="status-col"
-        :prop="thead.label"
-        :label="thead.text"
-      >
-        <template slot-scope="scope">
-          <div v-if="thead.label === 'status'">
-            <el-tag :type="scope.row.status | statusFilter('tag')">{{ scope.row.status | statusFilter('text') }}</el-tag>
-          </div>
-          <div v-else-if="thead.label === 'sex'">
-            <span>{{ scope.row.sex | sexFilter }}</span>
-          </div>
-          <div v-else>
-            <router-link
-              v-if="thead.router"
-              :to="thead.router"
-              style="color: #35C4E8;text-decoration: underline;"
-            >{{ scope.row[thead.label] }}</router-link>
-            <span v-else>{{ scope.row[thead.label] }}</span>
-          </div>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        v-if="isOperation"
-        label="操作"
-        :width="lgButtons.width ? lgButtons.width : 100 * lgButtons.operation[0].length"
+      @row-click="getRowClick")
+      el-table-column(v-if="hasSelection" :label="columnsLabel" align="center" :type="columnsType" :index="indexMethod" width="55")
+      el-table-column(v-for="thead in lgThead" :key="thead.label" :width="thead.width || ''" class-name="status-col" :prop="thead.label" :label="thead.text")
+        template(slot-scope="scope")
+          lgSolt(v-if="thead.render" :render="thead.render" :row="scope.row" :column="thead")
+          div(v-else) {{ scope.row[thead.label] }}
+      el-table-column(v-if="isOperation && lgButtons.operation" label="操作" :width="lgButtons.width ? lgButtons.width : 100 * lgButtons.operation[0].length"
         align="center"
         class-name="small-padding fixed-width"
-        fixed="right"
-      >
-        <template slot-scope="scope">
-          <el-button
-            v-for="button in (lgButtons.status ? lgButtons.operation[scope.row[statusName]] : lgButtons.operation[0])"
+        fixed="right")
+        template(slot-scope="scope")
+          el-button(v-for="button in (lgButtons.statusName ? lgButtons.operation[scope.row[lgButtons.statusName]] : lgButtons.operation[0])"
             :key="button.name"
+            v-permission="button.permission"
+            v-waves=""
             size="small"
             :type="button.type"
-            waves
-            @click="fun(scope.row, button.id, button.permissionValue)"
-          >
-            <span :style="button.color ? &quot;color:&quot; + button.color : &quot;&quot;">{{ button.text }}</span>
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <div class="pagination-container" style="text-align: right;">
-      <el-pagination
-        ref="pagination"
+            @click="fun(scope.row, button.id)")
+            span(:style="button.color ? 'color:' + button.color : ''") {{ button.text }}
+    .pagination-container
+      el-pagination(ref="pagination"
         background
         :current-page="listQuery.current"
         :page-sizes="[10,20,50,100]"
@@ -84,43 +40,37 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalList"
         @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
-    </div>
-  </div>
+        @current-change="handleCurrentChange")
 </template>
 <script>
+const lgSolt = {
+  functional: true,
+  props: {
+    row: Object,
+    render: Function,
+    column: {
+      type: Object,
+      default: null
+    }
+  },
+  render: (h, data) => {
+    const element = data.props.render(h, data.props.row)
+    if (typeof (element) === 'object' && element !== null) {
+      return element
+    } else {
+      return h('span', element)
+    }
+  }
+}
+import permission from '@/directive/permission'
 import waves from '@/directive/waves' // 水波纹指令
-let _this
 export default {
   name: 'LgTable',
   directives: {
-    waves
+    waves,
+    permission
   },
-  filters: {
-    statusFilter(val, key) {
-      const keyValue = _this.lgStatus.reduce((acc, cur) => {
-        acc[cur.status] = cur[key]
-        return acc
-      }, {})
-      return keyValue[val]
-    },
-    sexFilter(val) {
-      const sexOptions = [{
-        key: 0,
-        display_name: '男'
-      },
-      {
-        key: 1,
-        display_name: '女'
-      }]
-      const sexKeyValue = sexOptions.reduce((acc, cur) => {
-        acc[cur.key] = cur.display_name
-        return acc
-      }, {})
-      return sexKeyValue[val]
-    }
-  },
+  components: { lgSolt },
   props: {
     // 表格数据
     list: {
@@ -148,7 +98,7 @@ export default {
         return 'status'
       }
     },
-    // 表格第一列是否需要
+    // 表格第一列
     hasSelection: {
       type: Boolean,
       default: true
@@ -191,22 +141,6 @@ export default {
           }
         }]
       }
-    },
-    // 数据状态
-    lgStatus: {
-      type: Array,
-      default: function() {
-        return [{
-          status: 0,
-          text: '禁用',
-          tag: 'danger'
-        },
-        {
-          status: 1,
-          text: '启用',
-          tag: 'success'
-        }]
-      }
     }
   },
   data() {
@@ -220,16 +154,9 @@ export default {
   },
   computed: {
     // 通过vuex存储加载状态
-    // 切换加载状态：this.$store.commit('TOGGLE_LOADING', listLoading)
     listLoading() {
       return this.$store.getters.listLoading
-    },
-    permissionButtons() {
-      return this.$store.state.permissionButtons
     }
-  },
-  beforeCreate() {
-    _this = this
   },
   created() {
     // 初始化页码、每页条数
@@ -242,29 +169,9 @@ export default {
     getRowClick(r, e, c) {
       this.$emit('getRowClick', r, e, c)
     },
-    // 按钮事件、处理权限
-    fun(row, buttonId, permissionValue) {
-      if (permissionValue) {
-        if (this.permission(permissionValue)) {
-          this.$emit('operationEvent' + buttonId, row)
-        } else {
-          this.$message({
-            message: '暂无权限',
-            type: 'warning'
-          })
-        }
-      } else {
-        this.$emit('operationEvent' + buttonId, row)
-      }
-    },
-    permission(permissionValue) {
-      // 处理存在权限按钮
-      if (this.permissionValue) {
-        const resButton = this.permissionButtons.find(v => v === permissionValue)
-        return resButton !== undefined
-      } else {
-        return false
-      }
+    // 按钮事件
+    fun(row, buttonId) {
+      this.$emit('operationEvent' + buttonId, row)
     },
     // 搜索页码获取列表
     getList() {
@@ -295,14 +202,14 @@ export default {
 }
 </script>
 <style lang="scss">
-  .lg-tabel-container {
-    .el-table th.is-leaf {
-      background-color: #ecf0f7;
-      color: #666;
-    }
-    .el-table tr:nth-child(even) {
-      background-color: #FAFAFA;
-    }
+.lg-tabel-container {
+  .el-table th.is-leaf {
+    background-color: #ecf0f7;
+    color: #666;
   }
+  .el-table tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+}
 </style>
 

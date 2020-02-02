@@ -23,7 +23,17 @@ const tableAttr = {
     },
     {
       label: 'status',
-      text: '状态'
+      text: '状态',
+      render: (h, row) => {
+        const statusOptions = ['禁用', '启用']
+        const tags = ['danger', 'success']
+        console.log(tags[row.status])
+        return h('el-tag', {
+          attrs: {
+            type: tags[row.status]
+          }
+        }, statusOptions[row.status])
+      }
     },
     {
       label: 'updateName',
@@ -36,20 +46,20 @@ const tableAttr = {
     }
   ],
   buttons: {
-    status: true, // 是否区分操作状态 true：根据当前列的数据状态值使用operation[状态值]; false：使用operation[0]
+    statusName: 'status', // 是否区分操作状态 true：根据当前列的数据状态值使用operation[状态值]; false：使用operation[0]
     width: 300, // 表格操作列的宽度
     operation: { // 操作按钮配置
       0: [{
-        name: 'permissions',
-        text: '权限',
+        name: 'editor',
+        text: '编辑',
         id: 0,
         type: 'primary'
       },
       {
-        name: 'editor',
-        text: '编辑',
+        name: 'permissions',
+        text: '权限',
         id: 1,
-        type: 'primary'
+        type: 'warning'
       },
       {
         name: 'enable',
@@ -58,22 +68,22 @@ const tableAttr = {
         type: 'success'
       }],
       1: [{
-        name: 'permissions',
-        text: '权限',
+        name: 'editor',
+        text: '编辑',
         id: 0,
         type: 'primary'
       },
       {
-        name: 'editor',
-        text: '编辑',
+        name: 'permissions',
+        text: '权限',
         id: 1,
-        type: 'primary'
+        type: 'warning'
       },
       {
         name: 'disable',
         text: '禁用',
         id: 3,
-        type: ''
+        type: 'danger'
       }]
     }
   }

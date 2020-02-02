@@ -47,6 +47,12 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    if (store.getters.listLoading) {
+      store.dispatch('app/toggleLoading', false)
+    }
+    if (store.getters.loadingAll) {
+      store.dispatch('app/toggleLoadingAll', false)
+    }
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.

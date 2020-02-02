@@ -1,34 +1,11 @@
-<template>
-  <div class="lg-container">
-    <div class="lg-container-white">
-      <!--搜索模块-->
-      <div class="filter-container">
-        <el-input
-          v-model="filters.keyWord"
-          placeholder="输入关键字过滤"
-          style="width: 200px;"
-          class="filter-item el-input--small"
-          @keyup.enter.native="handleFilter"
-        />
-        <el-button
-          v-waves
-          class="filter-item el-button--small"
-          type="primary"
-          icon="el-icon-search"
-          @click="handleFilter"
-        >搜索</el-button>
-        <el-button
-          class="filter-item el-button--small"
-          style="margin-left: 10px;"
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleCreate"
-        >新增</el-button>
-      </div>
-
-      <!--主列表模块-->
-      <lgTable
-        columns-type="index"
+<template lang="pug">
+  .lg-container
+    .lg-container-white
+      .filter-container
+        el-input.filter-item(v-model="filters.keyWord" placeholder="输入关键字过滤" style="width: 200px;" @keyup.enter.native="handleFilter")
+        el-button.filter-item(style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="handleFilter") 搜索
+        el-button.filter-item(type="primary" icon="el-icon-plus" @click="handleCreate") 新增
+      lgTable(columns-type="index"
         columns-label="序号"
         :list="list"
         :total-list="total"
@@ -39,11 +16,8 @@
         @operationEvent2="operationEvent2"
         @operationEvent3="operationEvent3"
         @initListQuery="initListQuery"
-        @getListByPagination="getListByPagination"
-      />
-      <!--编辑新增弹出框-->
-      <lgDialog
-        :title="textMap[dialogTitle]"
+        @getListByPagination="getListByPagination")
+      lgDialog(:title="textMap[dialogTitle]"
         :visible="dialogFormVisible"
         width="500px"
         :show-form="true"
@@ -52,62 +26,41 @@
         label-width="70px"
         :value="dataForm"
         @on-submit="handleCreateOrUpdate"
-        @on-close="onClose"
-      >
-        <template slot="form">
-          <el-form-item label="角色名" prop="name">
-            <el-input v-model="dataForm.name" />
-          </el-form-item>
-          <el-form-item label="角色标识" prop="code">
-            <el-input v-model="dataForm.code" />
-          </el-form-item>
-          <el-form-item label="角色权限">
-            <el-input v-model="dataForm.description" />
-          </el-form-item>
-          <el-form-item label="顺序">
-            <el-input v-model="dataForm.orders" />
-          </el-form-item>
-          <el-form-item label="是否启用">
-            <el-select v-model="dataForm.status" class="filter-item" placeholder="Please select">
-              <el-option
-                v-for="item in roleConst.statusOptions"
+        @on-close="onClose")
+        template(slot="form")
+          el-form-item(label="角色名" prop="name")
+            el-input(v-model="dataForm.name")
+          el-form-item(label="角色标识" prop="code")
+            el-input(v-model="dataForm.code")
+          el-form-item(label="角色权限" prop="description")
+            el-input(v-model="dataForm.description")
+          el-form-item(label="顺序" prop="orders")
+            el-input(v-model="dataForm.orders")
+          el-form-item(label="是否启用" prop="status")
+            el-select(v-model="dataForm.status" placeholder="请选择")
+              el-option(v-for="item in roleConst.statusOptions"
                 :key="item.key"
                 :label="item.valueCn"
-                :value="item.key"
-              />
-            </el-select>
-          </el-form-item>
-        </template>
-      </lgDialog>
-      <!--权限设置-->
-      <lgDialog
-        title="权限设置"
+                :value="item.key")
+      lgDialog(title="权限设置"
         :visible="dialogFormVisibleTree"
         width="500px"
         :show-form="false"
         @on-submit="handleCreateOrUpdateTree"
-        @on-close="onTreeClose"
-      >
-        <template>
-          <el-tree
-            ref="tree"
+        @on-close="onTreeClose")
+        template
+          el-tree(ref="tree"
             :props="props"
             :data="treeData"
             show-checkbox
             default-expand-all
             node-key="id"
-            highlight-current
-          />
-        </template>
-      </lgDialog>
-    </div>
-  </div>
+            highlight-current)
 </template>
 
 <script>
 import { getPermissionsTree, updatePermission } from '@/api/system'
 import { list, createOrUpdate } from '@/api/common'
-import waves from '@/directive/waves' // Waves directive
 import lgTable from '@/views/components/lgTable'
 import lgDialog from '@/views/components/lgDialog'
 import { roleConst } from '@/views/system/columnsConst'
@@ -121,7 +74,6 @@ const defaultForm = {
 }
 export default {
   components: { lgTable, lgDialog },
-  directives: { waves },
   data() {
     return {
       roleConst,
@@ -181,6 +133,7 @@ export default {
     },
     // 获取列表
     getList() {
+      this.$store.dispatch('app/toggleLoading', true)
       const params = Object.assign({}, this.listQuery, this.filters)
       list(this.apiUri, params).then(res => {
         if (res.code === 200) {
@@ -190,9 +143,10 @@ export default {
       })
     },
     // 权限
-    operationEvent0(row) {
+    operationEvent1(row) {
       this.dialogFormVisibleTree = true
       this.dataForm.id = row.id
+      this.$store.dispatch('app/toggleLoadingAll', true)
       getPermissionsTree(row.id).then(res => {
         if (res.code === 200) {
           this.treeData = res.data.treeData
@@ -219,8 +173,8 @@ export default {
       this.dialogFormVisibleTree = false
     },
     // 编辑
-    operationEvent1(row) {
-      this.dataForm = Object.assign({}, row) // copy obj
+    operationEvent0(row) {
+      this.dataForm = Object.assign({}, row)
       this.dialogTitle = 'update'
       this.dialogFormVisible = true
     },

@@ -16,7 +16,11 @@ const tableAttr = {
     },
     {
       label: 'sex',
-      text: '性别'
+      text: '性别',
+      render: (h, row) => {
+        const sexOptions = ['男', '女']
+        return sexOptions[row.sex]
+      }
     },
     {
       label: 'createName',
@@ -29,11 +33,21 @@ const tableAttr = {
     },
     {
       label: 'status',
-      text: '状态'
+      text: '状态',
+      render: (h, row) => {
+        const statusOptions = ['禁用', '启用']
+        const tags = ['danger', 'success']
+        console.log(tags[row.status])
+        return h('el-tag', {
+          attrs: {
+            type: tags[row.status]
+          }
+        }, statusOptions[row.status])
+      }
     }
   ],
   buttons: {
-    status: true, // 是否区分操作状态 true：根据当前列的数据状态值使用operation[状态值]; false：使用operation[0]
+    statusName: 'status', // 是否区分操作状态 true：根据当前列的数据状态值使用operation[状态值]; false：使用operation[0]
     width: 300, // 表格操作列的宽度
     operation: { // 操作按钮配置
       0: [{
@@ -63,7 +77,7 @@ const tableAttr = {
         name: 'disable',
         text: '禁用',
         id: 2,
-        type: ''
+        type: 'warning'
       },
       {
         name: 'delete',
