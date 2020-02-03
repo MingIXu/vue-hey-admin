@@ -162,26 +162,6 @@ aside {
   }
 }
 
-.link-type,
-.link-type:focus {
-  color: #337ab7;
-  cursor: pointer;
-
-  &:hover {
-    color: rgb(32, 160, 255);
-  }
-}
-
-.filter-container {
-  padding-bottom: 10px;
-
-  .filter-item {
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 10px;
-  }
-}
-
 //refine vue-multiselect plugin
 .multiselect {
   line-height: 16px;
@@ -208,13 +188,24 @@ aside {
   }
 }
 
-// 多行文本框
+// filter
+.filter-container {
+  padding-bottom: 10px;
+
+  .filter-item {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 10px;
+  }
+}
+
+// textarea
 #lgTextarea {
   resize: none;
   height: 100px;
 }
 
-// 链接样式
+// a
 .link-type,
 .link-type:focus {
   color: #337ab7 !important;
@@ -225,27 +216,7 @@ aside {
   }
 }
 
-// 溢出隐藏
-.lgEllipsis {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.lgEllipsisTwo {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-
-.lgEllipsisThree {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-}
-// 空数据
+// null
 .lgNullData {
   display: inline-block;
   width: 100%;

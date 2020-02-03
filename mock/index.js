@@ -5,6 +5,7 @@ import { param2Obj } from '../src/utils'
 // import role from './role'
 // import permission from './permission'
 import article from './article'
+import login from './login'
 import search from './remote-search'
 
 const mocks = [
@@ -12,6 +13,7 @@ const mocks = [
   // ...role,
   // ...permission,
   ...article,
+  ...login,
   ...search
 ]
 

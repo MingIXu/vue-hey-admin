@@ -28,7 +28,6 @@ const tableAttr = {
   }],
   // 操作按钮
   buttons: {
-    status: false,
     width: 200,
     operation: {
       0: [

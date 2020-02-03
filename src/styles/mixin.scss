@@ -64,3 +64,15 @@
     border-bottom: $transparent-border-style;
   }
 }
+
+@mixin ellipsis($num) {
+  overflow: hidden;
+  @if $num==1 {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  } @else {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $num;
+  }
+}
