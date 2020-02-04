@@ -1,0 +1,55 @@
+export {
+  tableAttr
+}
+const tableAttr = {
+  thead: [
+    {
+      label: 'template',
+      text: '模板'
+    },
+    {
+      label: 'status',
+      text: '状态',
+      render: (h, row) => {
+        const statusOptions = ['禁用', '启用']
+        const tags = ['danger', 'success']
+        console.log(tags[row.status])
+        return h('el-tag', {
+          attrs: {
+            type: tags[row.status]
+          }
+        }, statusOptions[row.status])
+      }
+    }
+  ],
+  buttons: {
+    statusName: 'status',
+    width: 200,
+    operation: {
+      0: [{
+        name: 'editor',
+        text: '编辑',
+        id: 0,
+        type: 'primary'
+      },
+      {
+        name: 'enable',
+        text: '启用',
+        id: 1,
+        type: 'success'
+      }],
+      1: [{
+        name: 'editor',
+        text: '编辑',
+        id: 0,
+        type: 'primary'
+      },
+      {
+        name: 'disable',
+        text: '禁用',
+        id: 2,
+        type: 'danger'
+      }]
+    }
+  }
+}
