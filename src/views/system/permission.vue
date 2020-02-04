@@ -79,7 +79,6 @@
                 el-button(v-if="dataForm.type === 1 && dataForm.id" type="primary" @click="createChildren") 新增子节点
                 el-button(v-else-if="dataForm.type === 2 && dataForm.id" type="primary" @click="createButton") 新增按钮
                 el-button(type="primary" @click="handleCreateAndUpdate") {{ confirmValue }}
-                el-button(v-if="confirmValue==='保存' && dataForm.pid" type="primary" @click="handleContinue") 保存并新增
 </template>
 <script>
 import { createOrUpdate, remove } from '@/api/common'
@@ -183,8 +182,10 @@ export default {
       const id = this.dataForm.id
       this.reset()
       this.dataForm.pid = id
+      this.dataForm.type = 2
       this.confirmValue = '保存'
     },
+    // 新增按钮
     createButton() {
       const id = this.dataForm.id
       this.reset()
@@ -203,18 +204,14 @@ export default {
               message: this.confirmValue + '成功',
               type: 'success'
             })
+            if (this.dataForm.type === 1 && this.confirmValue === '保存') {
+              this.reset()
+              this.dataForm.type = 1
+              this.dataForm.component = 'Layout'
+            }
           })
         }
       })
-    },
-    // 保存并新增
-    handleContinue() {
-      this.handleCreateAndUpdate()
-      const pid = this.dataForm.pid
-      const type = this.dataForm.type
-      this.dataForm = Object.assign({}, defaultForm)
-      this.dataForm.pid = pid
-      this.dataForm.type = type
     },
     reset() {
       this.dataForm = Object.assign({}, defaultForm)

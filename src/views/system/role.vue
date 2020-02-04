@@ -2,8 +2,8 @@
   .lg-container
     .lg-container-white
       .filter-container
-        el-input.filter-item(v-model="filters.keyWord" placeholder="输入关键字过滤" style="width: 200px;" @keyup.enter.native="handleFilter")
-        el-button.filter-item(style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="handleFilter") 搜索
+        el-input.filter-item.w200(v-model="filters.keyWord" placeholder="输入关键字过滤" @keyup.enter.native="handleFilter")
+        el-button.filter-item(type="primary" icon="el-icon-search" @click="handleFilter") 搜索
         el-button.filter-item(type="primary" icon="el-icon-plus" @click="handleCreate") 新增
       lgTable(columns-type="index"
         columns-label="序号"
@@ -17,7 +17,7 @@
         @operationEvent3="operationEvent3"
         @initListQuery="initListQuery"
         @getListByPagination="getListByPagination")
-      lgDialog(:title="textMap[dialogTitle]"
+      lgDialog(:title="dialogTitle"
         :visible="dialogFormVisible"
         width="500px"
         :show-form="true"
@@ -90,10 +90,6 @@ export default {
       dataForm: Object.assign({}, defaultForm),
       dialogFormVisible: false,
       dialogTitle: '',
-      textMap: {
-        update: '编辑',
-        create: '添加'
-      },
       dialogPvVisible: false,
       dataRules: {
         name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -175,7 +171,7 @@ export default {
     // 编辑
     operationEvent0(row) {
       this.dataForm = Object.assign({}, row)
-      this.dialogTitle = 'update'
+      this.dialogTitle = '更新'
       this.dialogFormVisible = true
     },
     // 启用
@@ -213,7 +209,7 @@ export default {
     // 添加
     handleCreate() {
       this.resetForm()
-      this.dialogTitle = 'create'
+      this.dialogTitle = '新增'
       this.dialogFormVisible = true
     },
     // 添加提交
@@ -224,7 +220,7 @@ export default {
           this.getList()
           this.dialogFormVisible = false
           this.$message({
-            message: this.textMap[this.dialogTitle] + '成功',
+            message: this.dialogTitle + '成功',
             type: 'success'
           })
         }

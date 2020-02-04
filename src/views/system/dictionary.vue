@@ -18,8 +18,8 @@
             @node-click="handleNodeClick")
         el-main
           .filter-container
-            el-input.filter-item(v-model="filters.keyWord" placeholder="输入关键字过滤" style="width: 200px;" @keyup.enter.native="handleFilter")
-            el-button.filter-item(style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="handleFilter") 搜索
+            el-input.filter-item.w200(v-model="filters.keyWord" placeholder="输入关键字过滤" @keyup.enter.native="handleFilter")
+            el-button.filter-item(type="primary" icon="el-icon-search" @click="handleFilter") 搜索
             el-button.filter-item(type="primary" icon="el-icon-plus" @click="handleCreate") 新增
           lgTable(columns-type="index"
             columns-label="序号"
@@ -31,7 +31,7 @@
             @operationEvent1="operationEvent1"
             @initListQuery="initListQuery"
             @getListByPagination="getListByPagination")
-          lgDialog(:title="textMap[dialogTitle]"
+          lgDialog(:title="dialogTitle"
             :visible="dialogFormVisible"
             width="500px"
             :show-form="true"
@@ -88,10 +88,6 @@ export default {
       dialogFormVisible: false,
       // 弹窗提示语
       dialogTitle: '',
-      textMap: {
-        update: '编辑',
-        create: '新增'
-      },
       // 表单
       dataForm: Object.assign({}, defaultForm),
       // 表单校验
@@ -120,8 +116,8 @@ export default {
     // 获取树
     getTreeData() {
       this.treeLoading = true
-      getDicTypeTree().then(response => {
-        this.treeData = response.data.treeData
+      getDicTypeTree().then(res => {
+        this.treeData = res.data.treeData
         this.treeLoading = false
       })
     },
@@ -173,14 +169,14 @@ export default {
       const typeKey = this.dataForm.typeKey
       this.reset()
       this.dataForm.typeKey = typeKey
-      this.dialogTitle = 'create'
+      this.dialogTitle = '新增'
       this.dialogFormVisible = true
     },
     // 编辑
     operationEvent0(row) {
       this.reset()
       this.dataForm = Object.assign({}, row)
-      this.dialogTitle = 'update'
+      this.dialogTitle = '更新'
       this.dialogFormVisible = true
     },
     // 删除
@@ -212,7 +208,7 @@ export default {
         if (res.code === 200) {
           this.getList()
           this.$message({
-            message: this.textMap[this.dialogTitle] + '成功',
+            message: this.dialogTitle + '成功',
             type: 'success'
           })
           this.dialogFormVisible = false
